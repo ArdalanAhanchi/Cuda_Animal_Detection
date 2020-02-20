@@ -11,15 +11,18 @@ project( Cuda_Animal_Detection )
 find_package( OpenCV REQUIRED )
 
 ## Find the CUDA library.
-find_package( CUDA QUIET REQUIRED )
+find_package( CUDA REQUIRED )
 
-## Use at least C++11
+## Use at least C++11.
 set (CMAKE_CXX_STANDARD 11)
+
+## Make sure pthread is being used.
+Set (CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-pthread")
 
 ## Setup the build directory.
 include_directories( ${OpenCV_INCLUDE_DIRS} include )
 set( EXECUTABLE_OUTPUT_PATH build )
-add_executable( Cuda_Animal_Detection ./src/main.cu )
+add_executable( Cuda_Animal_Detection ./src/main.cpp )
 
 target_link_libraries( Cuda_Animal_Detection ${OpenCV_LIBS} )
 
