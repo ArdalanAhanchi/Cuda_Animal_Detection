@@ -1,6 +1,6 @@
 cmake_minimum_required( VERSION 2.8 )
 
-project( Cuda_Animal_Detection )
+project( Cuda_Animal_Detection LANGUAGES CXX CUDA)
 
 ## Check if it's windows, if it is, set the OpenCV Directory.
 ##if( WIN32 )
