@@ -21,7 +21,7 @@ double stringToDouble(std::string str)
 	}
 	catch (int e)
 	{
-		printf("Error occurred parsing value to double. Error num: %i\n", e);
+		std::cerr << "Error occurred parsing value to double. Error num: " << e << std::endl;
 	}
 	return value;
 }
@@ -91,7 +91,9 @@ std::vector<OpenImage> getImagesFromResourceFile(std::string resourceFile)
 {
 	std::vector<OpenImage> images;
 	std::ifstream fileStream(resourceFile);
-	printf("Attempting to load images from resource file: %s\n", resourceFile.c_str());
+	std::cerr << "Attempting to load images from resource file: " 
+        << resourceFile.c_str() << std::endl;
+
 	if (fileStream.is_open())
 	{
 		std::string line;
@@ -111,7 +113,8 @@ std::vector<OpenImage> getImagesFromResourceFile(std::string resourceFile)
 
 				if (error.size() > 0)
 				{
-					printf("Error occurred parsing line %i: %s\n", lineCount, error.c_str());
+					std::cerr << "Error occurred parsing line " << lineCount << " :"
+                        << error.c_str() << std::endl;
 				}
 				else 
 				{
@@ -121,7 +124,8 @@ std::vector<OpenImage> getImagesFromResourceFile(std::string resourceFile)
 			}
 			else
 			{
-				printf("Unexpected number of parameters on entry line %i\n", lineCount);
+				std::cerr << "Unexpected number of parameters on entry line " 
+                    << lineCount << std::endl;
 			}
 			lineCount++;
 		}
@@ -150,11 +154,9 @@ int main(int argc, char** argv)
 
 	if (dogImages.size() > 0)
 	{
-		printf("Loaded %i images\n", dogImages.size());
+		std::cerr << "Loaded " << dogImages.size() << " images." << std::endl;
 	}
 	else {
-		printf("No images loaded");
+		std::cerr << "No images loaded" << std::endl;
 	}
-	
-    std::cout << "Hello Animal Detector!" << std::endl;
 }
