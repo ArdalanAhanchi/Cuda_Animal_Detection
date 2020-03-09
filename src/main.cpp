@@ -4,6 +4,7 @@
 #include <sstream>  
 #include <iterator> 
 #include <vector>
+#include <chrono>
 
 #include "OpenImage.h"
 
