@@ -5,7 +5,7 @@
 #include <iterator> 
 #include <vector>
 
-#include "OpenImage.h"
+#include "open_image.hpp"
 
 /// <summary>
 /// Utility method to parse a string into a double value.
