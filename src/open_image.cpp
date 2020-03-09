@@ -1,4 +1,4 @@
-#include "OpenImage.h"
+#include "open_image.hpp"
 
 void OpenImage::print()
 {

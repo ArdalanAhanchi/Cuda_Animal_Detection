@@ -1,5 +1,5 @@
-#ifndef OPEN_IMAGE_H
-#define OPEN_IMAGE_H
+#ifndef OPEN_IMAGE_HPP
+#define OPEN_IMAGE_HPP
 #include <string>
 
 ///<summary>Simple structure to contain image information for an image file from OpenImages (Google)</summary>
