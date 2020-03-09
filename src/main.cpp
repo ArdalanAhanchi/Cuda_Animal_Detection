@@ -143,7 +143,7 @@ int main(int argc, char** argv)
 #ifdef _WIN32
 	std::string oiDogResourceFile = projectDir + "\\images\\open-images\\Dog_oi_resource.windows.txt";
 #elif linux
-	std::string oiDogResourceFile = projectDir + "/images/open-images/Dog_oi_resource.windows.txt";
+	std::string oiDogResourceFile = projectDir + "/images/open-images/Dog_oi_resource.linux.txt";
 #endif
 
 	std::vector<OpenImage> dogImages = getImagesFromResourceFile(oiDogResourceFile);
