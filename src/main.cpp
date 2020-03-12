@@ -6,6 +6,10 @@
 #include <vector>
 #include <chrono>
 
+#include <opencv2/core.hpp>
+#include <opencv2/imgcodecs.hpp>
+#include <opencv2/highgui.hpp>
+
 #include "open_image.hpp"
 
 /// <summary>
@@ -57,10 +61,10 @@ OpenImage LoadAndCreateObj(std::string pathToFile, std::string& error)
 				if (imageTokens.size() == 5)
 				{
 					parsedImage.filterDescription = imageTokens[0];
-					parsedImage.xMin = stringToDouble(imageTokens[1]);
-					parsedImage.xMax = stringToDouble(imageTokens[2]);
-					parsedImage.yMin = stringToDouble(imageTokens[3]);
-					parsedImage.yMax = stringToDouble(imageTokens[4]);
+					parsedImage.left = stringToDouble(imageTokens[1]);
+					parsedImage.top = stringToDouble(imageTokens[2]);
+					parsedImage.right = stringToDouble(imageTokens[3]);
+					parsedImage.bottom = stringToDouble(imageTokens[4]);
 				}
 				else
 				{
@@ -135,11 +139,49 @@ std::vector<OpenImage> getImagesFromResourceFile(std::string resourceFile)
 	return images;
 }
 
-bool canOpenFiles(std::string resourceFile)
+/// <summary>
+/// Convert an OpenImg object into a OpenCV Mat object. The OpenCV Mat object is a cropped image based on the original image.
+/// </summary>
+/// <param name="openImg">OpenImg object to convert to OpenCV Mat object</param>
+/// <returns>Cropped image object</returns>
+cv::Mat createBoundingImage(OpenImage openImg)
 {
-	std::ifstream fileStream(resourceFile);
+	cv::Mat imgOrig = cv::imread(openImg.pathToImage);
+	cv::Mat cropImg;
 
-	return fileStream.is_open();
+	if (!imgOrig.empty())
+	{
+		const int imgWidth = imgOrig.size().width;
+		const int imgHeight = imgOrig.size().height;
+
+		//Create rect to crop image
+		int cropX = int(openImg.left); //Truncating value here to ensure full pixel obtained. (Force rounding down)
+		int cropY = int(openImg.top); //Truncating value here to ensure full pixel obtained. (Force rounding down)
+		int cropWidth = (int(openImg.right) + 1) - cropX; //Similar to above, but round up
+		int cropHeight = (int(openImg.bottom) + 1) - cropY; //Similar to above, but round up
+		
+		
+		//Perform check to ensure that the total crop width doesn't exceed the actual image width
+		if (cropX + cropWidth >= imgWidth)
+		{
+			cropWidth = imgWidth - cropX - 1;
+		}
+		
+		//Perform check to ensure that the total crop height doesn't exceed the actual image height
+		if (cropY + cropHeight >= imgHeight)
+		{
+			cropHeight = imgHeight - cropY - 1;
+		}
+
+		cv::Rect cropArea (cropX, cropY, cropWidth, cropHeight);
+		cropImg = imgOrig(cropArea);
+	}
+	else 
+	{
+		std::cerr << "Error occurred trying to convert OpenImage object to OpenCV Mat" << std::endl;
+		openImg.print();
+	}
+	return cropImg;
 }
 
 int main(int argc, char** argv)
@@ -152,10 +194,22 @@ int main(int argc, char** argv)
 #endif
 
 	std::vector<OpenImage> dogImages = getImagesFromResourceFile(oiDogResourceFile);
-
 	if (dogImages.size() > 0)
 	{
-		std::cerr << "Loaded " << dogImages.size() << " images." << std::endl;
+		std::cout << "Loaded " << dogImages.size() << " images." << std::endl;
+		std::cout << "Converting images to cropped OpenCV images..." << std::endl;
+
+		std::vector<cv::Mat> croppedImages;
+		for (int i = 0; i < dogImages.size(); i++) {
+			cv::Mat cropImage = createBoundingImage(dogImages[i]);
+			
+			if (!cropImage.empty())
+			{
+				croppedImages.push_back(cropImage);
+			}
+		}
+
+		std::cout << "Conversions complete. Total Number of cropped images: " << croppedImages.size() << std::endl;
 	}
 	else {
 		std::cerr << "No images loaded" << std::endl;
