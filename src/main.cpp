@@ -146,7 +146,7 @@ std::vector<OpenImage> getImagesFromResourceFile(std::string resourceFile)
 /// <returns>Cropped image object</returns>
 cv::Mat createBoundingImage(OpenImage openImg)
 {
-	cv::Mat imgOrig = cv::imread(openImg.pathToImage);
+	cv::Mat imgOrig = cv::imread(openImg.pathToImage, 0);
 	cv::Mat cropImg;
 
 	if (!imgOrig.empty())
