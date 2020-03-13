@@ -185,5 +185,37 @@ void Ops_cpu::deriv_sigmoid(Mat& input) {
     }
 }
 
+/*
+*A method which applies the relu function to the passed matrix.
+*
+* @param input The matrix where we're applying the sigmoid to. 
+*/
+void Ops_cpu::relu(Mat& input) {
+    //Apply the relu to each element.
+    for (size_t r = 0; r < input.rows(); r++) {
+        for (size_t c = 0; c < input.cols(); c++) {
+            size_t idx = r * input.cols() + c;
+            if (input.data[idx] < 0)
+                input.data[idx] = 0;
+        }
+    }
+}
 
+/*
+*A method which applies the derivative of the relu function to the passed matrix.
+*
+* @param input The matrix where we're applying the sigmoid to. 
+*/
+void Ops_cpu::deriv_relu(Mat & input) {
+    //Apply the derivative to each element.
+    for (size_t r = 0; r < input.rows(); r++) {
+        for (size_t c = 0; c < input.cols(); c++) {
+            size_t idx = r * input.cols() + c;
+            if (input.data[idx] <= 0)
+                input.data[idx] = 0;
+            else
+                input.data[idx] = 1;
+        }
+    }
+}
 }

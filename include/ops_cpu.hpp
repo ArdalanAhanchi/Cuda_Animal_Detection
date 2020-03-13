@@ -87,6 +87,20 @@ class Ops_cpu : public Ops {
      *  @param input The matrix where we're applying the sigmoid to. 
      */
     void deriv_sigmoid(Mat& input); 
+
+    /**
+     *  A method which applies the relu function to the passed matrix.
+     *
+     *  @param input The matrix where we're applying the relu to.
+     */
+    void relu(Mat& input);
+
+    /**
+ *  A method which applies the derivative of the relu function.
+ *
+ *  @param input The matrix where we're applying the relu to.
+ */
+    void deriv_relu(Mat& input);
 };
 
 }
