@@ -67,6 +67,53 @@ namespace anr {
         delete[] this->_bias_gradients;
     }
 
+    /**
+     *  A method which performs convolutions on the images by applying a kernel.
+     *
+     *  @param images The input matrix of pixel values.
+     *  @param kernel The filter to apply.
+     */
+    Mat& Cnn::convolution(Mat& images, type* kernel, Mat& output, int kernelSizeX, int kernelSizeY)
+    {
+        int i, j, m, n, mm, nn;
+        int kCenterX, kCenterY;                         // center index of kernel
+        float sum;                                      // temp accumulation buffer
+        int rowIndex, colIndex;
+
+        // find center position of kernel (half of kernel size)
+        kCenterX = kernelSizeX / 2;
+        kCenterY = kernelSizeY / 2;
+
+        const int dx = kernelSizeX / 2;
+        const int dy = kernelSizeY / 2;
+
+        for (i = 0; i < images.rows(); ++i)                // rows
+        {
+            for (j = 0; j < images.cols(); ++j)            // columns
+            {
+                sum = 0;                            // init to 0 before sum
+                for (m = 0; m < kernelSizeY; ++m)      // kernel rows
+                {
+                    mm = kernelSizeY - 1 - m;       // row index of flipped kernel
+
+                    for (n = 0; n < kernelSizeX; ++n)  // kernel columns
+                    {
+                        nn = kernelSizeX - 1 - n;   // column index of flipped kernel
+
+                        // index of input signal, used for checking boundary
+                        rowIndex = i + (kCenterY - mm);
+                        colIndex = j + (kCenterX - nn);
+
+                        // ignore input samples which are out of bound
+                        if (rowIndex >= 0 && rowIndex < images.rows() && colIndex >= 0 && colIndex < images.cols())
+                            sum += images.data[images.cols() * rowIndex + colIndex] * kernel[kernelSizeX * mm + nn];
+                    }
+                }
+                output.data[images.cols() * i + j] = (unsigned char)((float)fabs(sum) + 0.5f);
+            }
+        }
+        return output;
+    }
 
     /**
      *  A method which trains the initialized model based on the given input, and the

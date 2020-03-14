@@ -42,6 +42,7 @@ namespace anr {
          */
         void train(Mat& input, Mat& expected);
 
+        Mat& convolution(Mat& images, type* kernel, Mat& output, int kernelSizeX, int kernelSizeY);
 
     private:
 
@@ -54,6 +55,12 @@ namespace anr {
         Mat* _bias_gradients;                   /**< Arrau of Gradients for the biases. */
 
         type _rate;                             /**< Network's current learning rate. */
+        // define 5x5 Gaussian kernel
+        type kernel[25] = { 1 / 256.0,  4 / 256.0,  6 / 256.0,  4 / 256.0, 1 / 256.0,
+                             4 / 256.0, 16 / 256.0, 24 / 256.0, 16 / 256.0, 4 / 256.0,
+                             6 / 256.0, 24 / 256.0, 36 / 256.0, 24 / 256.0, 6 / 256.0,
+                             4 / 256.0, 16 / 256.0, 24 / 256.0, 16 / 256.0, 4 / 256.0,
+                             1 / 256.0,  4 / 256.0,  6 / 256.0,  4 / 256.0, 1 / 256.0 };
     };
 
 }
