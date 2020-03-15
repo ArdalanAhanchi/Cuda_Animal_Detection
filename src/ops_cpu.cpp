@@ -202,6 +202,31 @@ void Ops_cpu::relu(Mat& input) {
 }
 
 /*
+*A method which applies the softmax function to the passed matrix.
+*
+* @param input The matrix where we're applying the softmax to.
+*/
+void Ops_cpu::softmax(Mat& input) {
+    //Apply the softmax to each element.
+    type sum = 0;
+    for (size_t r = 0; r < input.rows(); r++) {
+        for (size_t c = 0; c < input.cols(); c++) {
+            size_t idx = r * input.cols() + c;
+            type exp = std::exp(input.data[idx]);
+            sum += exp;
+        }
+    }
+
+    for (size_t r = 0; r < input.rows(); r++) {
+        for (size_t c = 0; c < input.cols(); c++) {
+            size_t idx = r * input.cols() + c;
+            type exp = std::exp(input.data[idx]);
+            input.data[idx] = exp / sum;
+        }
+    }
+}
+
+/*
 *A method which applies the derivative of the relu function to the passed matrix.
 *
 * @param input The matrix where we're applying the sigmoid to. 
