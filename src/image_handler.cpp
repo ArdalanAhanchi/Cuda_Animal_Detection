@@ -298,3 +298,37 @@ std::vector<cv::Mat> ImageHandler::applyTransforms()
 	}
 	return resultImages;
 }
+
+/*
+*  Convert an OpenCV Mat to the internal matrix type that we'll use for the convolusions and MLP
+*  @param images - Original OpenCV images
+*  @returns - List of internal matrix objects
+*/
+std::vector<anr::Mat> ImageHandler::convertToInteralMat(std::vector<cv::Mat> images)
+{
+	std::vector<anr::Mat> convertedMats;
+
+	for (int i = 0; i < images.size(); i++)
+	{
+		cv::Mat convertedMat;
+		anr::Mat internalMat(images[i].size().height, images[i].size().width);
+		images[i].convertTo(convertedMat, CV_32F, 1.0 / 255, 0);
+		
+		for (int t = 0; t < 10; t++)
+		{
+			printf("Original [%i]: %i\n", t, images[i].data[t]);
+			printf("     New [%i]: %f\n", t, convertedMat.data[t]);
+		}
+
+		for (int row = 0; row < convertedMat.size().height; row++)
+		{
+			for (int col = 0; col < convertedMat.size().width; col++)
+			{
+				internalMat.data[(row * convertedMat.size().width) + col] = float(convertedMat.at<float>(row, col));
+			}
+		}
+		convertedMats.push_back(internalMat);
+	}
+
+	return convertedMats;
+}

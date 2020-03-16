@@ -16,7 +16,9 @@
 #include "opencv2/imgproc.hpp"
 
 #include "open_image.hpp"
+#include "mat.hpp"
 #include <string>
+
 
 class ImageHandler
 {
@@ -92,6 +94,14 @@ public:
 	*  @returns - List of resized images.
 	*/
 	std::vector<cv::Mat> applyAverageSizeTransform(std::vector<cv::Mat> images);
+
+
+	/*
+	*  Convert an OpenCV Mat to the internal matrix type that we'll use for the convolusions and MLP
+	*  @param images - Original OpenCV images
+	*  @returns - List of internal matrix objects
+	*/
+	std::vector<anr::Mat> convertToInteralMat(std::vector<cv::Mat> images);
 
 	/*
 	*  Wrapper method which parses the resource file and performs all the neccessary
