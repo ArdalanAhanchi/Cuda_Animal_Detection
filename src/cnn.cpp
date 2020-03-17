@@ -13,6 +13,7 @@
 #include "ops_cpu.hpp"
 
 #include <vector>
+#include <math.h>       //For fabs
 
 namespace anr {
 
@@ -109,7 +110,7 @@ namespace anr {
                             sum += images.data[images.cols() * rowIndex + colIndex] * kernel[kernelSizeX * mm + nn];
                     }
                 }
-                output.data[images.cols() * i + j] = (unsigned char)((float)fabs(sum) + 0.5f);
+                output.data[images.cols() * i + j] = (unsigned char)((float) std::fabs(sum) + 0.5f);
             }
         }
         return output;
@@ -151,7 +152,7 @@ namespace anr {
         }
 
 
-        /** Back prop Not working yet. *******************************************************
+        /** Back prop Not working yet. ***************************************************
 
         //Go through the layers in reverse order and compute the gradients (up to the output).
         //It also updates the weights based on the calculations (back-prop).
@@ -179,7 +180,7 @@ namespace anr {
             this->_layers[i + 1] = layer;
         }
 
-        *************************************************************************************/
+        *********************************************************************************/
     }
 
 }

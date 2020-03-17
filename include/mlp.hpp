@@ -42,6 +42,17 @@ class Mlp {
      */
     void train(Mat& input, Mat& expected);
 
+
+    /** 
+     *  A method which predicts the classification value based on the given input.
+     *  it should only be run when the network is fully trained.
+     *
+     *  @param input The data input matrix.
+     *  @return The classification result.
+     */
+    Mat predict(Mat& input);
+    
+
     
 private:
 

@@ -9,6 +9,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>  
+#include <iterator>
 
 #include "image_handler.hpp"
 

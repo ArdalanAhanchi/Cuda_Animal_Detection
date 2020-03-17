@@ -17,8 +17,17 @@
 
 namespace anr {
 
-#define MAT_RAND_MIN 0.01
+//Min/Max numbers used for random number generation.
 #define MAT_RAND_MAX 1.00
+#define MAT_RAND_MIN 0.01
+
+//Min/Max values for Step Down/Up functionality.
+#define STEP_HIGH 0.9
+#define STEP_LOW 0.1
+
+//Total value Min/Max.
+#define VALUE_MAX 1.0
+#define VALUE_MIN 0.0
 
 /**
  *  Constructor which initializes the network with the proper values. The
@@ -91,8 +100,10 @@ void Mlp::train(Mat& input, Mat& expected) {
     //Initialize the operations class (will be changed based on the mode in the future).
     Ops_cpu ops_cpu;
     Ops* ops = &ops_cpu;
-    
 
+
+    /* Forward Prop *********************************************************************/
+    
     //Go through the layers and compute the layers (up to the output).
     for(size_t i = 0; i < this->_num_layers - 1; i++) {
         Mat layer;
@@ -105,26 +116,76 @@ void Mlp::train(Mat& input, Mat& expected) {
     }
 
 
-    /** Back prop Not working yet. *******************************************************
+    /** Back Prop ***********************************************************************/
 
     //Go through the layers in reverse order and compute the gradients (up to the output).
     //It also updates the weights based on the calculations (back-prop).
-    for(size_t i = this->_num_layers - 1; i >= 0 ; i--) {
-        Mat weight_gradient, bias_gradient;
+    for(size_t i = this->_num_layers - 1; i > 0 ; i--) {
+        Mat bias_gradient_temp, temp;
 
+        //If we're on the last layer, use the difference.
+        if(i == this->_num_layers - 1) {
+            //Find the difference between expected and output.
+            temp = ops->sub(this->_layers[i], expected);
+        } else {
+            //Otherise multiply the last gradient by last weight (transposed).
+            Mat transposed_w(this->_weights[i - 1], true);
+            temp = ops->mult(this->_bias_gradients[i], transposed_w);
+        }
 
-        //Set it to multiplication of last layer, and it's weights.
-        bias_gradient = ops->mult(this->_layers[i - 1], this->_weights[i - 1]);
+        //Set it to matrix multiplication of last layer, and it's weights.
+        bias_gradient_temp = ops->mult(this->_layers[i - 1], this->_weights[i - 1]);
 
         //Add the biases to it.
-        bias_gradient = ops->add(bias_gradient, this->_biases[i - 1]);
+        bias_gradient_temp = ops->add(bias_gradient_temp, this->_biases[i - 1]);
 
         //Apply the derivative of sigmoid to it.
-        ops->deriv_sigmoid(bias_gradient);
+        ops->deriv_sigmoid(bias_gradient_temp);
 
-        //Find the difference between the layers.
-        Mat difference = ops->sub(this->_layers[i], expected);
 
+        //Multiply element by element and set the bias gradient.
+        this->_bias_gradients[i - 1] = ops->e_mult(temp, bias_gradient_temp);
+
+        //Transpose the last layer and save it.
+        Mat weight_gradient_temp(this->_layers[i - 1], true);
+
+        //Multiply it by the bias gradiant and update weight gradients.
+        this->_weight_gradients[i - 1] = 
+            ops->mult(weight_gradient_temp, this->_bias_gradients[i - 1]);
+    }
+
+    //Go through all and update weights and biases based on the learning rate.
+    for(size_t i = 0; i < this->_num_layers - 1; i++) {
+        //Scale the weight and bias gradients by the learning rate.
+        Mat scaled_weight_g = ops->scale(this->_weight_gradients[i], this->_rate);
+        Mat scaled_bias_g = ops->scale(this->_bias_gradients[i], this->_rate);
+
+        //Update the weights and biases.
+        this->_weights[i] = ops->sub(this->_weights[i], scaled_weight_g);
+        this->_biases[i] = ops->sub(this->_biases[i], scaled_bias_g);
+    }
+
+    /********************************************************************************/
+}
+
+/** 
+ *  A method which predicts the classification value based on the given input.
+ *  it should only be run when the network is fully trained.
+ *
+ *  @param input The data input matrix.
+ *  @return The classification result.
+ */
+Mat Mlp::predict(Mat& input) {
+    //Initialize the operations class (will be changed based on the mode in the future).
+    Ops_cpu ops_cpu;
+    Ops* ops = &ops_cpu;
+
+    //Place a shallow copy of input at the first element of the layers.
+    this->_layers[0] = input;
+
+    //Go through the layers and compute the layers (up to the output).
+    for(size_t i = 0; i < this->_num_layers - 1; i++) {
+        Mat layer;
         layer = ops->mult(this->_layers[i], this->_weights[i]);     //Multiply the weights.
         layer = ops->add(this->_layers[i], this->_biases[i]);       //Add the biases.
         ops->sigmoid(layer);                                        //Apply sigmoid.
@@ -133,7 +194,24 @@ void Mlp::train(Mat& input, Mat& expected) {
         this->_layers[i + 1] = layer;
     }
 
-    *************************************************************************************/
+    //Store a shallow copy of the output matrix.
+    Mat output = this->_layers[this->_num_layers - 1];
+
+    //Apply the stepping function, and return the results.
+    for(size_t r = 0; r < output.rows(); r++) {
+        for(size_t c = 0; c < output.cols(); c++) {
+            //Compare the output and step it up/down accordingly.
+            if(output.get(r, c) > STEP_HIGH)
+                output.at(r, c) = VALUE_MAX;
+            else if(output.get(r, c) < STEP_LOW)
+                output.at(r, c) = VALUE_MIN;
+        }
+    }
+
+    //Return the results.
+    return output;    
 }
+
+
 
 }

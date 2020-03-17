@@ -13,8 +13,8 @@ find_package( OpenCV REQUIRED )
 ## Find the CUDA library.
 find_package( CUDA REQUIRED )
 
-## Use at least C++11.
-set (CMAKE_CXX_STANDARD 11)
+## Use at least C++14.
+set (CMAKE_CXX_STANDARD 14)
 
 ## Make sure pthread is being used.
 Set (CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-pthread")
