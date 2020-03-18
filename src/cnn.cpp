@@ -124,19 +124,19 @@ namespace anr {
     Mat& Cnn::maxpool(Mat& input, int window, int stride)
     {
         // calculate output dimensions after the maxpooling operation.
-        int h = int((input.rows - window) / stride) + 1;
-        int w = int((input.cols - window) / stride) + 1;
+        int h = int((input.rows() - window) / stride) + 1;
+        int w = int((input.cols() - window) / stride) + 1;
 
         Mat out(h, w);
         for (int i = 0; i < h * w; i++)
         {
             int curY = 0;
             int outY = 0;
-            while (curY + window < input.rows)
+            while (curY + window < input.rows())
             {
                 int curX = 0;
                 int outX = 0;
-                while (curX + window < input.cols)
+                while (curX + window < input.cols())
                 {
                     int curX = 0;
                     int outX = 0;
@@ -145,14 +145,14 @@ namespace anr {
                     {
                         for (int x = curX; x < curX + window; x++)
                         {
-                            if (input.data[y * input.rows + x] > INT_MIN)
+                            if (input.data[y * input.rows() + x] > INT_MIN)
                             {
                                 
-                                max = input.data[y * input.rows + x];
+                                max = input.data[y * input.rows() + x];
                             }
                         }
                     }
-                    out.data[outY * out.rows + outX] = max;
+                    out.data[outY * out.rows() + outX] = max;
                     curX += stride;
                     outX += 1;
                 }
