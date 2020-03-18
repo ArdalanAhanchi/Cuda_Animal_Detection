@@ -199,6 +199,8 @@ Mat& Mat::operator=(const Mat& other) {
 
     //Increase the reference count (since it's being referenced again).
     *(this->_ref_count) += 1;
+
+    return *this;
 }
 
 
