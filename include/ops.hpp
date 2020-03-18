@@ -86,6 +86,30 @@ class Ops {
      *  @param input The matrix where we're applying the sigmoid to. 
      */
     virtual void deriv_sigmoid(Mat& input) = 0; 
+
+
+    /**
+     *  A method which applies the relu function to the passed matrix.
+     *
+     *  @param input The matrix where we're applying the relu to.
+     */
+    virtual void relu(Mat& input) = 0;
+
+
+    /**
+     *  A method which applies the softmax function to the passed matrix.
+     *
+     *  @param input The matrix where we're applying the softmax to.
+     */
+    virtual void softmax(Mat& input) = 0;
+
+
+    /**
+     *  A method which applies the derivative of the relu function.
+     *
+     *  @param input The matrix where we're applying the relu to.
+     */
+    virtual void deriv_relu(Mat& input) = 0;
 };
 
 }

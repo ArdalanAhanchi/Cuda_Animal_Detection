@@ -1,7 +1,6 @@
 /**
  *  The implementation for a class which implements a basic multi-layer perceptron. There
  *  is one input layer, one output layer, and the number of hidden layers can be variable.
- *  (However, that feature is not yet fully implemented, right now it's only 1 layer).
  *
  *  @author Ardalan Ahanchi
  *  @date March 2020
@@ -36,11 +35,15 @@ namespace anr {
  *  should at least have 3 values (one input, one hidden, and one output layer).
  *
  *  @param layer_sizes A vector which holds the sizes for each layer (in/hiddens/out).
+ *  @param operations The operations object which will be used (cpu, gpu, etc.).
  *  @param rate The rate the learning for this specific network.
  */
-Mlp::Mlp(const std::vector<size_t>& layer_sizes, const type& rate) {
-    //Set the rate in the network.
+Mlp::Mlp(const std::vector<size_t>& layer_sizes, Ops* operations, const type& rate) {
+    //Set the learning rate for the network.
     this->_rate = rate;
+
+    //Set the operations for the network.
+    this->_ops = operations;
 
     //Check the hidden layer sizes, it should be at least one.
     if(layer_sizes.size() < 3)
@@ -98,10 +101,6 @@ void Mlp::train(Mat& input, Mat& expected) {
     //Place a shallow copy of input at the first element of the layers.
     this->_layers[0] = input;
 
-    //Initialize the operations class (will be changed based on the mode in the future).
-    Ops_cpu ops_cpu;
-    Ops* ops = &ops_cpu;
-
     /* Forward Prop *********************************************************************/
     this->forward(input);
 
@@ -115,42 +114,42 @@ void Mlp::train(Mat& input, Mat& expected) {
         //If we're on the last layer, use the difference.
         if(i == this->_num_layers - 1) {
             //Find the difference between expected and output.
-            temp = ops->sub(this->_layers[i], expected);
+            temp = this->_ops->sub(this->_layers[i], expected);
         } else {
             //Otherise multiply the last gradient by last weight (transposed).
             Mat transposed_w(this->_weights[i], true);
-            temp = ops->mult(this->_bias_gradients[i], transposed_w);
+            temp = this->_ops->mult(this->_bias_gradients[i], transposed_w);
         }
 
         //Set it to matrix multiplication of last layer, and it's weights.
-        bias_gradient_temp = ops->mult(this->_layers[i - 1], this->_weights[i - 1]);
+        bias_gradient_temp = this->_ops->mult(this->_layers[i - 1], this->_weights[i - 1]);
 
         //Add the biases to it.
-        bias_gradient_temp = ops->add(bias_gradient_temp, this->_biases[i - 1]);
+        bias_gradient_temp = this->_ops->add(bias_gradient_temp, this->_biases[i - 1]);
 
         //Apply the derivative of sigmoid to it.
-        ops->deriv_sigmoid(bias_gradient_temp);
+        this->_ops->deriv_sigmoid(bias_gradient_temp);
 
         //Multiply element by element and set the bias gradient.
-        this->_bias_gradients[i - 1] = ops->e_mult(temp, bias_gradient_temp);
+        this->_bias_gradients[i - 1] = this->_ops->e_mult(temp, bias_gradient_temp);
 
         //Transpose the last layer and save it.
         Mat weight_gradient_temp(this->_layers[i - 1], true);
 
         //Multiply it by the bias gradiant and update weight gradients.
         this->_weight_gradients[i - 1] = 
-            ops->mult(weight_gradient_temp, this->_bias_gradients[i - 1]);
+            this->_ops->mult(weight_gradient_temp, this->_bias_gradients[i - 1]);
     }
 
     //Go through all and update weights and biases based on the learning rate.
     for(size_t i = 0; i < this->_num_layers - 1; i++) {
         //Scale the weight and bias gradients by the learning rate.
-        Mat scaled_weight_g = ops->scale(this->_weight_gradients[i], this->_rate);
-        Mat scaled_bias_g = ops->scale(this->_bias_gradients[i], this->_rate);
+        Mat scaled_weight_g = this->_ops->scale(this->_weight_gradients[i], this->_rate);
+        Mat scaled_bias_g = this->_ops->scale(this->_bias_gradients[i], this->_rate);
 
         //Update the weights and biases.
-        this->_weights[i] = ops->sub(this->_weights[i], scaled_weight_g);
-        this->_biases[i] = ops->sub(this->_biases[i], scaled_bias_g);
+        this->_weights[i] = this->_ops->sub(this->_weights[i], scaled_weight_g);
+        this->_biases[i] = this->_ops->sub(this->_biases[i], scaled_bias_g);
     }
 
     /********************************************************************************/
@@ -192,19 +191,15 @@ Mat Mlp::predict(Mat& input) {
  *  @param input The current input for prop, will be placed at the 0th layer.
  */
 void Mlp::forward(Mat& input) {
-    //Initialize the operations class (will be changed based on the mode in the future).
-    Ops_cpu ops_cpu;
-    Ops* ops = &ops_cpu;
-
     //Place a shallow copy of input at the first element of the layers.
     this->_layers[0] = input;
 
     //Go through the layers and compute the layers (up to the output).
     for(size_t i = 0; i < this->_num_layers - 1; i++) {
         Mat layer;
-        layer = ops->mult(this->_layers[i], this->_weights[i]);     //Multiply the weights.
-        layer = ops->add(layer, this->_biases[i]);                  //Add the biases.
-        ops->sigmoid(layer);                                        //Apply sigmoid.
+        layer = this->_ops->mult(this->_layers[i], this->_weights[i]); //Multiply the weights.
+        layer = this->_ops->add(layer, this->_biases[i]);              //Add the biases.
+        this->_ops->sigmoid(layer);                                    //Apply sigmoid.
 
         //Assign the layer build to the correct index.
         this->_layers[i + 1] = layer;

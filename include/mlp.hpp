@@ -2,6 +2,7 @@
 #define MLP_HPP
 
 #include "mat.hpp"
+#include "ops.hpp"
 
 #include <vector>
 
@@ -10,7 +11,6 @@ namespace anr {
 /**
  *  The definition for a class which implements a basic multi-layer perceptron. There is 
  *  one input layer, one output layer, and the number of hidden layers can be variable.
- *  (However, that feature is not yet fully implemented, right now it's only 1 layer).
  *
  *  @author Ardalan Ahanchi
  *  @date March 2020
@@ -24,9 +24,10 @@ public:
      *  should at least have 3 values (one input, one hidden, and one output layer).
      *
      *  @param layer_sizes A vector which holds the sizes for each layer (in/hiddens/out).
+     *  @param operations The operations object which will be used (cpu, gpu, etc.).
      *  @param rate The rate the learning for this specific network.
      */
-    Mlp(const std::vector<size_t>& layer_sizes, const type& rate);
+    Mlp(const std::vector<size_t>& layer_sizes, Ops* operations, const type& rate);
 
     
     /**
@@ -81,6 +82,8 @@ private:
     Mat* _bias_gradients;                   /**< Arrau of Gradients for the biases. */
 
     type _rate;                             /**< Network's current learning rate. */
+
+    Ops* _ops;                              /**< Current Operations Library being used. */
 };
 
 }

@@ -88,6 +88,7 @@ class Ops_cpu : public Ops {
      */
     void deriv_sigmoid(Mat& input); 
 
+
     /**
      *  A method which applies the relu function to the passed matrix.
      *
@@ -95,18 +96,20 @@ class Ops_cpu : public Ops {
      */
     void relu(Mat& input);
 
-    /**
-    *  A method which applies the softmax function to the passed matrix.
-    *
-    *  @param input The matrix where we're applying the softmax to.
-    */
-    void softmax(Mat& input);
 
     /**
- *  A method which applies the derivative of the relu function.
- *
- *  @param input The matrix where we're applying the relu to.
- */
+     *  A method which applies the softmax function to the passed matrix.
+     *
+     *  @param input The matrix where we're applying the softmax to.
+     */
+    void softmax(Mat& input);
+
+
+    /**
+     *  A method which applies the derivative of the relu function.
+     *
+     *  @param input The matrix where we're applying the relu to.
+     */
     void deriv_relu(Mat& input);
 };
 

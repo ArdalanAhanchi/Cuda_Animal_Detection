@@ -13,7 +13,7 @@
  *  A file for testing the implementation of MLP using two diffferent functions/
  *
  *  @author Ardalan Ahanchi
- *  @date March 17, 2020
+ *  @date March 2020
  */
 
 
@@ -21,7 +21,7 @@
  *  A function which trains a mlp model to represent the XOR function. It then tests and 
  *  prints results. It trains for 5000 times to get a decent accuracy.
  */
-void test_mlp_xor() {
+void test_mlp_xor(anr::Ops* ops) {
     std::cout << "Running the mlp test XOR program." << std::endl;
 
     std::vector<anr::Mat> training_data;
@@ -51,7 +51,7 @@ void test_mlp_xor() {
     layer_sizes.push_back(4);
     layer_sizes.push_back(1);
 
-    anr::Mlp nn(layer_sizes, 0.8);
+    anr::Mlp nn(layer_sizes, ops, 0.8);
     
     //Traing the mlp.
     for(size_t t = 0; t < 5000; t++)
@@ -74,7 +74,7 @@ void test_mlp_xor() {
  *  A function which trains a mlp model to represent a linear function. It then tests and 
  *  prints results. It trains for 2000 times to get a decent accuracy.
  */
-void test_mlp_lin() {
+void test_mlp_lin(anr::Ops* ops) {
 std::cout << "Running the mlp test linear program." << std::endl;
 
     std::vector<anr::Mat> training_data;
@@ -104,7 +104,7 @@ std::cout << "Running the mlp test linear program." << std::endl;
     layer_sizes.push_back(9);
     layer_sizes.push_back(2);
 
-    anr::Mlp nn(layer_sizes, 0.8);
+    anr::Mlp nn(layer_sizes, ops, 0.8);
     
     //Traing the mlp for 2000 of the points.
     for(size_t i = 0; i < 2000; i++)
@@ -130,9 +130,12 @@ std::cout << "Running the mlp test linear program." << std::endl;
  *  @return EXIT_SUCCESS at the end of execution.
  */
 int test_mlp() {
+    //Define the ops class we're gonna use.
+    anr::Ops* ops = new anr::Ops_cpu;
+
     //Test both functions.
-    test_mlp_xor();
-    test_mlp_lin();
+    test_mlp_xor(ops);
+    test_mlp_lin(ops);
 
     return EXIT_SUCCESS;
 }
