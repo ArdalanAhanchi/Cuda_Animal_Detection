@@ -13,7 +13,8 @@
 #include "ops_cpu.hpp"
 
 #include <vector>
-#include <math.h>       //For fabs
+#include <math.h>         //For fabs
+#include <bits/stdc++.h>  //For INT_MIN 
 
 namespace anr {
 
@@ -74,7 +75,7 @@ namespace anr {
      *  @param images The input matrix of pixel values.
      *  @param kernel The filter to apply.
      */
-    Mat& Cnn::convolution(Mat& images, type* kernel, Mat& output, Mat& bias, int kernelSizeX, int kernelSizeY)
+    Mat Cnn::convolution(Mat& images, type* kernel, Mat& output, Mat& bias, int kernelSizeX, int kernelSizeY)
     {
         int i, j, m, n, mm, nn;
         int kCenterX, kCenterY;                         // center index of kernel
@@ -121,7 +122,7 @@ namespace anr {
         return output;
     }
 
-    Mat& Cnn::maxpool(Mat& input, int window, int stride)
+    Mat Cnn::maxpool(Mat& input, int window, int stride)
     {
         // calculate output dimensions after the maxpooling operation.
         int h = int((input.rows() - window) / stride) + 1;

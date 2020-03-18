@@ -42,9 +42,9 @@ namespace anr {
          */
         void train(Mat& input, Mat& expected);
 
-        Mat& convolution(Mat& images, type* kernel, Mat& output, Mat& bias, int kernelSizeX, int kernelSizeY);
+        Mat convolution(Mat& images, type* kernel, Mat& output, Mat& bias, int kernelSizeX, int kernelSizeY);
 
-        Mat& maxpool(Mat& input, int kernelSize, int stride);
+        Mat maxpool(Mat& input, int kernelSize, int stride);
 
     private:
 
