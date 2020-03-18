@@ -8,6 +8,10 @@
 #include "image_handler.hpp"
 #include "mat.hpp"
 
+//Temporary test for mlp.
+#include "test_mlp.cpp"
+//#include "test_mat_ops.cpp"
+
 std::string type2str(int type) {
 	std::string r;
 
@@ -33,6 +37,10 @@ std::string type2str(int type) {
 
 int main(int argc, char** argv)
 {
+    //Temporary testing of the mlp.
+    //TODO: Remove and replace with proper testing methods.
+    return test_mlp();
+
 	std::string projectDir = std::getenv("CSS535_PROJ");
 
 	//We can add more references to other resource files if time permitting

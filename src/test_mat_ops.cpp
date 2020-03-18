@@ -5,6 +5,7 @@
 #include "ops_cpu.hpp"
 #include "ops.hpp"
 
+/*
 auto start_time()
 {
     return std::chrono::high_resolution_clock::now();
@@ -16,26 +17,27 @@ double calc_time(std::chrono::high_resolution_clock::time_point begin)
     double time = std::chrono::duration<double>(total_time).count();
     return time;
 }
+*/
 
 void test_mat() {
     std::cout << "Running the matrix test program" << std::endl;
 
     //Capture the beginning time before the calculations.
-    auto begin_calcs = start_time();
+    //auto begin_calcs = start_time();
 
     anr::Mat a(3, 6);
     for(size_t i = 0; i < a.rows() * a.cols(); i++)
         a.data[i] = 2;
 
-    double time = calc_time(begin_calcs);
-    std::cout << time << std::endl;
+    //double time = calc_time(begin_calcs);
+    //std::cout << time << std::endl;
     a.print("Matrix a");
 
     anr::Mat b(6, 3);
     for(size_t i = 0; i < b.rows() * b.cols(); i++)
         b.data[i] = 3;
 
-    b.print("Matrix b");
+    b.print("\nMatrix b");
 
     anr::Mat c(b, true);
     c.print("\nMatrix c");
@@ -54,4 +56,8 @@ void test_mat() {
 
     anr::Mat g = ops->mult(a, b);
     g.print("\nMultiplied a * b");
+
+    anr::Mat h(1, 1);
+    h = ops->scale(a, 9);
+    h.print("\nAssigned");
 }

@@ -16,6 +16,8 @@ namespace anr {
  *  @date March 2020
  */
 class Mlp {
+
+public:
     /**
      *  Constructor which initializes the network with the proper values. The
      *  initialization depends on the sizes passed to this constructor. The layer sizes
@@ -51,10 +53,24 @@ class Mlp {
      *  @return The classification result.
      */
     Mat predict(Mat& input);
-    
 
+
+    /**
+     *  A method which prints this neural network in a nice easy to read format. 
+     *  it prints the current state of the system.
+     */
+    void print() const;
+    
     
 private:
+
+    /**
+     *  A method which performs forward propogation in the network. It is used both in
+     *  training and prediction.
+     *
+     *  @param input The current input for prop, will be placed at the 0th layer.
+     */
+    void forward(Mat& input);
 
     Mat* _layers;                           /**< Array of All layers (current values). */
     size_t _num_layers;                     /**< The total number of layers. */
