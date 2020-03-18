@@ -394,17 +394,14 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\mat.cpp" />
-    <ClCompile Include="..\src\mlp.cpp" />
-    <ClCompile Include="..\src\ops_cpu.cpp" />
-    <ClCompile Include="..\src\test_mat_ops.cpp" />
     <ClCompile Include="C:\Cuda_Animal_Detection\src\main.cpp" />
-    <ClInclude Include="..\src\mat.hpp" />
-    <ClInclude Include="..\src\mlp.hpp" />
-    <ClInclude Include="..\src\ops.hpp" />
-    <ClInclude Include="..\src\ops_cpu.hpp" />
-    <ClInclude Include="C:\Cuda_Animal_Detection\src\OpenImage.h" />
-    <ClCompile Include="C:\Cuda_Animal_Detection\src\OpenImage.cpp" />
+    <ClCompile Include="C:\Cuda_Animal_Detection\src\open_image.cpp" />
+    <ClCompile Include="C:\Cuda_Animal_Detection\src\mat.cpp" />
+    <ClCompile Include="C:\Cuda_Animal_Detection\src\mlp.cpp" />
+    <ClCompile Include="C:\Cuda_Animal_Detection\src\ops_cpu.cpp" />
+    <ClCompile Include="C:\Cuda_Animal_Detection\src\test_mat_ops.cpp" />
+    <ClCompile Include="C:\Cuda_Animal_Detection\src\cnn.cpp" />
+    <ClCompile Include="C:\Cuda_Animal_Detection\src\image_handler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="C:\Cuda_Animal_Detection\build\ZERO_CHECK.vcxproj">
