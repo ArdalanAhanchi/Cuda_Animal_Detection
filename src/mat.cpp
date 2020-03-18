@@ -50,7 +50,7 @@ Mat::Mat(const size_t& rows, const size_t& cols) {
 
 
 /**
- *  Copy osntructor which creates a a shallow copy of the passed matrix.
+ *  Copy constructor which creates a a shallow copy of the passed matrix.
  *
  *  @param copy The other matrix which we're copying.
  *  @param transpose True if the new matrix should be transposed, false otherwise.
@@ -105,24 +105,10 @@ Mat::Mat(const Mat& copy, bool transpose) {
 
 
 /**
- *  Destructor which deallocates the data array, and resets _rows, and _cols.
+ *  Destructor which deallocates the data and reference count if needed.
  */
 Mat::~Mat() {
-    //Deallocate if not nullptr, and if not referenced.
-    if(this->data != nullptr && *(this->_ref_count) <= 0) {
-         delete[] this->data;
-         this->data = nullptr;
-    }
-    
-    //Deallocate the refence count if it's not being used.
-    if(this->_ref_count != nullptr && *(this->_ref_count) <= 0) {
-        delete this->_ref_count;
-        this->_ref_count = nullptr;
-    }
-
-    //Reduce the reference count by one.
-    if(this->_ref_count != nullptr)
-        *(this->_ref_count) -= 1;
+    this->deallocate();
 }
 
 
@@ -191,6 +177,51 @@ void Mat::print(const std::string title) const {
 
         std::cout << std::endl;                         //Go to the next line.
     }
+}
+
+
+/**
+ *  Assignment operator overload which creates a shallow copy of the passed object.
+ *  It also calls the deallocate if it was needed (IE this is the only reference).
+ *
+ *  @param other The other mat object which we're assigning to this one.
+ *  @return A pointer to this mat object.
+ */
+Mat& Mat::operator=(const Mat& other) {
+    //Deallocate the current data.    
+    this->deallocate();
+
+    //Copy over the class variables.
+    this->data = other.data;
+    this->_rows = other.rows();
+    this->_cols = other.cols();
+    this->_ref_count = other._ref_count;
+
+    //Increase the reference count (since it's being referenced again).
+    *(this->_ref_count) += 1;
+}
+
+
+/**
+ *  A method which deallocates the data and reference count, only if the reference 
+ *  count is already 0 (not referenced elsewhere).
+ */
+void Mat::deallocate() {
+    //Deallocate if not nullptr, and if not referenced.
+    if(this->data != nullptr && *(this->_ref_count) <= 0) {
+         delete[] this->data;
+         this->data = nullptr;
+    }
+    
+    //Deallocate the refence count if it's not being used.
+    if(this->_ref_count != nullptr && *(this->_ref_count) <= 0) {
+        delete this->_ref_count;
+        this->_ref_count = nullptr;
+    }
+
+    //Reduce the reference count by one.
+    if(this->_ref_count != nullptr)
+        *(this->_ref_count) -= 1;
 }
 
 }

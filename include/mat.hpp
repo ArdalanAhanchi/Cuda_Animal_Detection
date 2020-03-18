@@ -55,7 +55,7 @@ class Mat
 
 
     /**
-     *  Destructor which deallocates the data array, and resets _rows, and _cols.
+     *  Destructor which deallocates the data and reference count if needed.
      */
     ~Mat();
 
@@ -118,9 +118,26 @@ class Mat
     void print(const std::string title="") const;
 
 
+    /**
+     *  Assignment operator overload which creates a shallow copy of the passed object.
+     *  It also calls the deallocate if it was needed (IE this is the only reference).
+     *
+     *  @param other The other mat object which we're assigning to this one.
+     *  @return A pointer to this mat object.
+     */
+    Mat& operator=(const Mat& other);
+
+
     type* data;         /**< A pointer to a column major array of data for this matrix. */
 
   private:
+
+    /**
+     *  A method which deallocates the data and reference count, only if the reference 
+     *  count is already 0 (not referenced elsewhere).
+     */
+    void deallocate();
+
     size_t* _ref_count; /**< Reference counter for data (provides fast, and nice moves).*/
 
     size_t _rows;       /**< The number of rows in this matrix. */

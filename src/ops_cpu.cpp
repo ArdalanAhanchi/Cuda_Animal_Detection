@@ -25,8 +25,11 @@ namespace anr {
  */
 Mat Ops_cpu::add(const Mat& a, const Mat& b) {
     //If the matrices are not the same size, return a 0x0 matrix.
-    if(a.rows() != b.rows() || a.cols() != b.cols())
-        return Mat(0,0);
+    if(a.rows() != b.rows() || a.cols() != b.cols()) {
+        std::cerr << "Ops_cpu: add: Error: Matrices should be the same dimentions." << std::endl;
+        return Mat(0, 0);
+    }
+
 
     //If the matrices are the same size, initialize the output matrix.
     Mat output(a.rows(), a.cols());
@@ -54,8 +57,10 @@ Mat Ops_cpu::add(const Mat& a, const Mat& b) {
  */
 Mat Ops_cpu::sub(const Mat& a, const Mat& b) {
     //If the matrices are not the same size, return a 0x0 matrix.
-    if(a.rows() != b.rows() || a.cols() != b.cols())
-        return Mat(0,0);
+    if(a.rows() != b.rows() || a.cols() != b.cols()){
+        std::cerr << "Ops_cpu: sub: Error: Matrices should be the same dimentions." << std::endl;
+        return Mat(0, 0);
+    }
 
     //If the matrices are the same size, initialize the output matrix.
     Mat output(a.rows(), a.cols());
@@ -83,18 +88,20 @@ Mat Ops_cpu::sub(const Mat& a, const Mat& b) {
  */
 Mat Ops_cpu::mult(const Mat& a, const Mat& b)  {
     //If the matrices are not the correct size, return a 0x0 matrix.
-    if(a.cols() != b.rows())
-        return Mat(0,0);
+    if(a.cols() != b.rows()) {
+        std::cerr << "Ops_cpu: mult: Error: Invalid sizes for multiplication." << std::endl;
+        return Mat(0, 0);
+    }
 
     //If the matrices are the same size, initialize the output matrix to the correct size.
     Mat output(a.rows(), b.cols());
 
     //Three nested loops to calculate a basic matrix multiplication.
-    for(size_t i = 0; i < output.rows(); i++)
-        for(size_t j = 0; j < output.cols(); j++)
+    for(size_t i = 0; i < a.rows(); i++)
+        for(size_t j = 0; j < b.cols(); j++)
             for(size_t k = 0; k < b.rows(); k++)
                 output.data[i * output.cols() + j] += 
-                    a.data[i * a.cols() + k] + b.data[k * b.cols() + j];
+                    a.data[i * a.cols() + k] * b.data[k * b.cols() + j];
 
     return output;  //Returns by value, but the data is on heap, so it's a shallow copy.
 }  
@@ -110,8 +117,10 @@ Mat Ops_cpu::mult(const Mat& a, const Mat& b)  {
  */
 Mat Ops_cpu::e_mult(const Mat& a, const Mat& b) {
     //If the matrices are not the same size, return a 0x0 matrix.
-    if(a.rows() != b.rows() || a.cols() != b.cols())
-        return Mat(0,0);
+    if(a.rows() != b.rows() || a.cols() != b.cols()) {
+        std::cerr << "Ops_cpu: e_mult: Error: Matrices should be the same dimentions." << std::endl;
+        return Mat(0, 0);
+    }
 
     //If the matrices are the same size, initialize the output matrix.
     Mat output(a.rows(), a.cols());
@@ -185,11 +194,12 @@ void Ops_cpu::deriv_sigmoid(Mat& input) {
     }
 }
 
-/*
-*A method which applies the relu function to the passed matrix.
-*
-* @param input The matrix where we're applying the sigmoid to. 
-*/
+
+/**
+ * A method which applies the relu function to the passed matrix.
+ *
+ * @param input The matrix where we're applying the sigmoid to. 
+ */
 void Ops_cpu::relu(Mat& input) {
     //Apply the relu to each element.
     for (size_t r = 0; r < input.rows(); r++) {
@@ -201,11 +211,11 @@ void Ops_cpu::relu(Mat& input) {
     }
 }
 
-/*
-*A method which applies the softmax function to the passed matrix.
-*
-* @param input The matrix where we're applying the softmax to.
-*/
+/**
+ * A method which applies the softmax function to the passed matrix.
+ *
+ * @param input The matrix where we're applying the softmax to.
+ */
 void Ops_cpu::softmax(Mat& input) {
     //Apply the softmax to each element.
     type sum = 0;
@@ -226,11 +236,12 @@ void Ops_cpu::softmax(Mat& input) {
     }
 }
 
-/*
-*A method which applies the derivative of the relu function to the passed matrix.
-*
-* @param input The matrix where we're applying the sigmoid to. 
-*/
+
+/**
+ * A method which applies the derivative of the relu function to the passed matrix.
+ *
+ * @param input The matrix where we're applying the sigmoid to. 
+ */
 void Ops_cpu::deriv_relu(Mat & input) {
     //Apply the derivative to each element.
     for (size_t r = 0; r < input.rows(); r++) {
@@ -243,4 +254,5 @@ void Ops_cpu::deriv_relu(Mat & input) {
         }
     }
 }
+
 }

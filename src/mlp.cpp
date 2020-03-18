@@ -14,12 +14,13 @@
 #include "ops_cpu.hpp"
 
 #include <vector>
+#include <iostream>
 
 namespace anr {
 
 //Min/Max numbers used for random number generation.
-#define MAT_RAND_MAX 1.00
-#define MAT_RAND_MIN 0.01
+#define MAT_RAND_MAX 0.50
+#define MAT_RAND_MIN -0.50
 
 //Min/Max values for Step Down/Up functionality.
 #define STEP_HIGH 0.9
@@ -87,7 +88,7 @@ Mlp::~Mlp() {
  */
 void Mlp::train(Mat& input, Mat& expected) {
     //Check if input or expected are invalid sizes.
-    if(input.rows() != 1 || input.cols() == 0 || expected.rows() != 1 || expected.cols() != 0)
+    if(input.rows() != 1 || input.cols() == 0 || expected.rows() != 1 || expected.cols() == 0)
         throw "Mlp: Error: Invalid input or expected vectors passed (num_rows == 1).";
 
     //Check if we're not set up.
@@ -101,20 +102,8 @@ void Mlp::train(Mat& input, Mat& expected) {
     Ops_cpu ops_cpu;
     Ops* ops = &ops_cpu;
 
-
     /* Forward Prop *********************************************************************/
-    
-    //Go through the layers and compute the layers (up to the output).
-    for(size_t i = 0; i < this->_num_layers - 1; i++) {
-        Mat layer;
-        layer = ops->mult(this->_layers[i], this->_weights[i]);     //Multiply the weights.
-        layer = ops->add(this->_layers[i], this->_biases[i]);       //Add the biases.
-        ops->sigmoid(layer);                                        //Apply sigmoid.
-
-        //Assign the layer build to the correct index.
-        this->_layers[i + 1] = layer;
-    }
-
+    this->forward(input);
 
     /** Back Prop ***********************************************************************/
 
@@ -129,7 +118,7 @@ void Mlp::train(Mat& input, Mat& expected) {
             temp = ops->sub(this->_layers[i], expected);
         } else {
             //Otherise multiply the last gradient by last weight (transposed).
-            Mat transposed_w(this->_weights[i - 1], true);
+            Mat transposed_w(this->_weights[i], true);
             temp = ops->mult(this->_bias_gradients[i], transposed_w);
         }
 
@@ -141,7 +130,6 @@ void Mlp::train(Mat& input, Mat& expected) {
 
         //Apply the derivative of sigmoid to it.
         ops->deriv_sigmoid(bias_gradient_temp);
-
 
         //Multiply element by element and set the bias gradient.
         this->_bias_gradients[i - 1] = ops->e_mult(temp, bias_gradient_temp);
@@ -176,23 +164,8 @@ void Mlp::train(Mat& input, Mat& expected) {
  *  @return The classification result.
  */
 Mat Mlp::predict(Mat& input) {
-    //Initialize the operations class (will be changed based on the mode in the future).
-    Ops_cpu ops_cpu;
-    Ops* ops = &ops_cpu;
-
-    //Place a shallow copy of input at the first element of the layers.
-    this->_layers[0] = input;
-
-    //Go through the layers and compute the layers (up to the output).
-    for(size_t i = 0; i < this->_num_layers - 1; i++) {
-        Mat layer;
-        layer = ops->mult(this->_layers[i], this->_weights[i]);     //Multiply the weights.
-        layer = ops->add(this->_layers[i], this->_biases[i]);       //Add the biases.
-        ops->sigmoid(layer);                                        //Apply sigmoid.
-
-        //Assign the layer build to the correct index.
-        this->_layers[i + 1] = layer;
-    }
+    //Perform forward prop based on the input.
+    this->forward(input);
 
     //Store a shallow copy of the output matrix.
     Mat output = this->_layers[this->_num_layers - 1];
@@ -210,6 +183,55 @@ Mat Mlp::predict(Mat& input) {
 
     //Return the results.
     return output;    
+}
+
+/**
+ *  A method which performs forward propogation in the network. It is used both in
+ *  training and prediction.
+ *
+ *  @param input The current input for prop, will be placed at the 0th layer.
+ */
+void Mlp::forward(Mat& input) {
+    //Initialize the operations class (will be changed based on the mode in the future).
+    Ops_cpu ops_cpu;
+    Ops* ops = &ops_cpu;
+
+    //Place a shallow copy of input at the first element of the layers.
+    this->_layers[0] = input;
+
+    //Go through the layers and compute the layers (up to the output).
+    for(size_t i = 0; i < this->_num_layers - 1; i++) {
+        Mat layer;
+        layer = ops->mult(this->_layers[i], this->_weights[i]);     //Multiply the weights.
+        layer = ops->add(layer, this->_biases[i]);                  //Add the biases.
+        ops->sigmoid(layer);                                        //Apply sigmoid.
+
+        //Assign the layer build to the correct index.
+        this->_layers[i + 1] = layer;
+    }
+}
+
+
+/**
+ *  A method which prints this neural network in a nice easy to read format. 
+ *  it prints the current state of the system.
+ */
+void Mlp::print() const {
+    std::cerr << "* MLP ***********************************************\n" << std::endl;
+    
+    //Print the input layer.
+    this->_layers[0].print("Input Layer");
+
+    //Print the weights, biases, and next layers.
+    for(size_t i = 0; i < this->_num_layers - 1; i++) {
+        std::cerr << std::endl << "* Layer " << i + 1 <<  " *****************" << std::endl;
+        this->_weights[i].print("\nWeights");
+        this->_biases[i].print("\nBiases");
+        this->_layers[i + 1].print("\nLayer");
+        std::cerr << std::endl << "***************************" << std::endl;
+    }
+
+    std::cerr << "\n*****************************************************\n" << std::endl;
 }
 
 
