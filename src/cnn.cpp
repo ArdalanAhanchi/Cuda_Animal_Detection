@@ -121,6 +121,49 @@ namespace anr {
         return output;
     }
 
+    Mat& Cnn::maxpool(Mat& input, int window, int stride)
+    {
+        // calculate output dimensions after the maxpooling operation.
+        int h = int((input.rows - window) / stride) + 1;
+        int w = int((input.cols - window) / stride) + 1;
+
+        Mat out(h, w);
+        for (int i = 0; i < h * w; i++)
+        {
+            int curY = 0;
+            int outY = 0;
+            while (curY + window < input.rows)
+            {
+                int curX = 0;
+                int outX = 0;
+                while (curX + window < input.cols)
+                {
+                    int curX = 0;
+                    int outX = 0;
+                    int max = INT_MIN;
+                    for (int y = curY; y < curY + window; y++)
+                    {
+                        for (int x = curX; x < curX + window; x++)
+                        {
+                            if (input.data[y * input.rows + x] > INT_MIN)
+                            {
+                                
+                                max = input.data[y * input.rows + x];
+                            }
+                        }
+                    }
+                    out.data[outY * out.rows + outX] = max;
+                    curX += stride;
+                    outX += 1;
+                }
+                curY += stride;
+                outY += 1;
+            }
+        }
+        return out;
+    }
+
+
     /**
      *  A method which trains the initialized model based on the given input, and the
      *  expected output. This is the starting point of all calculations on this mlp.

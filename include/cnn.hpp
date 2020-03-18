@@ -44,6 +44,8 @@ namespace anr {
 
         Mat& convolution(Mat& images, type* kernel, Mat& output, Mat& bias, int kernelSizeX, int kernelSizeY);
 
+        Mat& maxpool(Mat& input, int kernelSize, int stride);
+
     private:
 
         Mat* _layers;                           /**< Array of All layers (current values). */
