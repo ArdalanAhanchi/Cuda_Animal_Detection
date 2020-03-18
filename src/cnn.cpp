@@ -14,7 +14,7 @@
 
 #include <vector>
 #include <math.h>         //For fabs
-#include <bits/stdc++.h>  //For INT_MIN 
+#include <climits>        //For INT_MIN 
 
 namespace anr {
 
