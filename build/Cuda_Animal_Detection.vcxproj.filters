@@ -16,9 +16,6 @@
     <ClCompile Include="C:\Cuda_Animal_Detection\src\ops_cpu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Cuda_Animal_Detection\src\test_mat_ops.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="C:\Cuda_Animal_Detection\src\cnn.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
