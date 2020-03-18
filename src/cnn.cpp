@@ -74,7 +74,7 @@ namespace anr {
      *  @param images The input matrix of pixel values.
      *  @param kernel The filter to apply.
      */
-    Mat& Cnn::convolution(Mat& images, type* kernel, Mat& output, int kernelSizeX, int kernelSizeY)
+    Mat& Cnn::convolution(Mat& images, type* kernel, Mat& output, Mat& bias, int kernelSizeX, int kernelSizeY)
     {
         int i, j, m, n, mm, nn;
         int kCenterX, kCenterY;                         // center index of kernel
@@ -110,7 +110,12 @@ namespace anr {
                             sum += images.data[images.cols() * rowIndex + colIndex] * kernel[kernelSizeX * mm + nn];
                     }
                 }
-                output.data[images.cols() * i + j] = (unsigned char)((float) std::fabs(sum) + 0.5f);
+
+                for (int b = 0; b < this->_num_layers - 1; b++)
+                {
+                    output.data[images.cols() * i + j] = bias.data[b];
+
+                }
             }
         }
         return output;
