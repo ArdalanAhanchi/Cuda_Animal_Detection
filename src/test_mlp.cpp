@@ -137,6 +137,9 @@ int test_mlp() {
     test_mlp_xor(ops);
     test_mlp_lin(ops);
 
+    //Dekete the ops since we're done.
+    delete ops;
+
     return EXIT_SUCCESS;
 }
 
