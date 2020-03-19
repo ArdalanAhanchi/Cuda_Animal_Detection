@@ -112,7 +112,7 @@ __global__ void mult_kernel(type* a_gpu, type* b_gpu, type* c_gpu) {
 	type sum_c = 0;
 
 	//Go through every tile (in a single direction).
-	for(int t = 0; t < ((a_dims[0] - 1) / TILE + 1) ; t++)
+	for(size_t t = 0; t < ceil((a_dims[1] / (type) TILE)) ; t++)
     {
         //Load from A matrix into shared memory tile (if not a boundry).
         a_tile[(tx * TILE) + ty] = 
@@ -122,13 +122,13 @@ __global__ void mult_kernel(type* a_gpu, type* b_gpu, type* c_gpu) {
         //Load from B matrix into shared memory tile (if not a boundry).
         b_tile[(tx * TILE) + ty] = 
             (col < b_dims[1] && ((t * TILE) + tx) < b_dims[0]) ?
-            b_gpu[col + ((t * TILE) + ty) * b_dims[1]] : 0.0;
+            b_gpu[col + ((t * TILE) + tx) * b_dims[1]] : 0.0;
 
 		//Wait till all the data is completely stored in shared memory.
 		__syncthreads();
 
         //Multiply the values from the matrices stored in shared memory.
-		for(int i = 0; i < TILE; i++)
+		for(size_t i = 0; i < TILE; i++)
 			sum_c += a_tile[(tx * TILE) + i] * b_tile[(i * TILE) + ty];
 
 		//Wait till the sum is calculated before adding it up for the assignment.

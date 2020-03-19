@@ -7,6 +7,7 @@
 #include "mat.hpp"
 #include "ops_cpu.hpp"
 #include "ops_gpu.cuh"
+#include "ops_hybrid.cuh"
 #include "ops.hpp"
 #include "mlp.hpp"
 
@@ -48,14 +49,14 @@ void test_mlp_xor(anr::Ops* ops) {
     //Initialize the layer sizes.
     std::vector<size_t> layer_sizes;
     layer_sizes.push_back(2);
-    layer_sizes.push_back(5);
-    layer_sizes.push_back(4);
+    layer_sizes.push_back(50);
+    layer_sizes.push_back(60);
     layer_sizes.push_back(1);
 
-    anr::Mlp nn(layer_sizes, ops, 0.8);
+    anr::Mlp nn(layer_sizes, ops, 0.6);
     
     //Traing the mlp.
-    for(size_t t = 0; t < 300; t++)
+    for(size_t t = 0; t < 2000; t++)
         for(size_t i = 0; i < training_data.size(); i++)
             nn.train(training_data[i], expected_data[i]);
 
@@ -101,7 +102,7 @@ std::cout << "\n\nRunning the mlp test linear program." << std::endl;
     //Initialize the layer sizes.
     std::vector<size_t> layer_sizes;
     layer_sizes.push_back(3);
-    layer_sizes.push_back(7);
+    layer_sizes.push_back(70);
     layer_sizes.push_back(9);
     layer_sizes.push_back(2);
 
@@ -113,14 +114,23 @@ std::cout << "\n\nRunning the mlp test linear program." << std::endl;
 
     std::cerr << "\n* Results (5X + 2Y + Z) > 4 ***************************" << std::endl;
 
+    size_t correct = 0;
+
     //Test the predictions, and print data.
     for(size_t i = 2000; i < 3000; i++) {
         anr::Mat predicted = nn.predict(training_data[i]);
         
-        training_data[i].print("\n\nInput");
-        expected_data[i].print("Expected");
-        predicted.print("Prediction");
+        //training_data[i].print("\n\nInput");
+        //expected_data[i].print("Expected");
+        //predicted.print("Prediction");
+        if(predicted.get(0, 0) > 0.5 && expected_data[i].get(0, 0) == 1.0)
+            correct++;
+        else if(predicted.get(0, 1) >= 0.5 && expected_data[i].get(0, 1) == 1.0)
+            correct++;
     }
+
+    std::cerr << "\nResults: Correct=" << correct << " Total=" << 1000 
+        << " Accuracy=" << float(correct) / 1000.0 << std::endl << std::endl; 
 }
 
 
@@ -133,7 +143,7 @@ std::cout << "\n\nRunning the mlp test linear program." << std::endl;
 int test_mlp() {
     //* Test with the CPU ops *******************
     //Define the ops class we're gonna use.
-    anr::Ops* ops = new anr::Ops_cpu;
+    anr::Ops* ops = new anr::Ops_hybrid;
 
     //Test both functions.
     test_mlp_xor(ops);

@@ -27,16 +27,14 @@ void cmp_gpu_cpu() {
     //auto begin_calcs = start_time();
 
     anr::Mat a(3, 6);
-    for(size_t i = 0; i < a.rows() * a.cols(); i++)
-        a.data[i] = 2;
+    a.randomize(-10, 10);
 
     //double time = calc_time(begin_calcs);
     //std::cout << time << std::endl;
     a.print("Matrix a");
 
     anr::Mat b(6, 3);
-    for(size_t i = 0; i < b.rows() * b.cols(); i++)
-        b.data[i] = 3;
+    b.randomize(-10, 10);
 
     b.print("\nMatrix b");
 
@@ -82,14 +80,13 @@ void cmp_gpu_cpu() {
     g.print("\nMultiplied a * b GPU");
 
 
-
     anr::Mat h(1, 1);
     h = ops_c->scale(a, 9);
     h.print("\nAssigned");
 
     
     anr::Mat i(3, 7);
-    i.randomize(-30, 30);
+    i.randomize(-3, 3);
 
     anr::Mat i_cp(i, false);
 
@@ -112,6 +109,14 @@ void cmp_gpu_cpu() {
     ops_g->deriv_sigmoid(j_cp);
     j_cp.print("\nAfter Sigmoid Prime GPU");
     
+
+    anr::Mat k(1, 10);
+    k.randomize(-10, 10);
+    anr::Mat l(10, 3);
+    l.randomize(-5, 5);
+    
+    ops_c->mult(k, l).print("\nAfter multiplication CPU");
+    ops_g->mult(k, l).print("\nAfter multiplication GPU");
 }
 
 void test_mat() {

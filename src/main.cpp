@@ -15,6 +15,7 @@
 #include "test_mat_ops.cpp"
 
 #define MLP_TRAINING_RATIO 0.7
+#define NUM_IMAGES 10
 
 std::string type2str(int type) {
 	std::string r;
@@ -43,7 +44,7 @@ int main(int argc, char** argv)
 {
     //Temporary testing of the mlp.
     //TODO: Remove and replace with proper testing methods.
-    //return test_mlp();
+    return test_mlp();
     //test_mat();
     //return EXIT_SUCCESS;
 
@@ -60,9 +61,9 @@ int main(int argc, char** argv)
 	std::string oiTestResourceFile = "images/open-images/test_oi_resource.linux.txt";
 #endif
 
-	ImageHandler dogHandler(projectDir, oiDogResourceFile);
-	ImageHandler catHandler(projectDir, oiCatResourceFile);
-	ImageHandler testHandler(projectDir, oiTestResourceFile);
+	ImageHandler dogHandler(projectDir, oiDogResourceFile, NUM_IMAGES);
+	ImageHandler catHandler(projectDir, oiCatResourceFile, NUM_IMAGES);
+	ImageHandler testHandler(projectDir, oiTestResourceFile, NUM_IMAGES);
 	int averageWidth = 0;
 	int averageHeight = 0;
 	std::vector<cv::Mat> transformedDogImages = dogHandler.applyTransforms();
@@ -74,7 +75,8 @@ int main(int argc, char** argv)
 	if (transformedDogImages.size() > 0)
 	{
 		//transform test images to same size as dog images
-		cv::Size desiredSize(transformedDogImages[0].size().width, transformedDogImages[0].size().height); //All of the dog images here should be the same size (from applyTransforms())
+        //All of the dog images here should be the same size (from applyTransforms())
+		cv::Size desiredSize(transformedDogImages[0].size().width, transformedDogImages[0].size().height); 
 		std::vector<cv::Mat> resizedCatImages = catHandler.resizeImages(transformedCatImages, desiredSize);
 		std::vector<cv::Mat> resizedTestImages = testHandler.resizeImages(testImages, desiredSize);
 
@@ -102,6 +104,8 @@ int main(int argc, char** argv)
         std::vector<anr::Mat> training_data;
         std::vector<anr::Mat> expected_data;
 
+        std::cerr << "Log: Main: Adding Images to training data." << std::endl;
+
         //Add the data from the dog and test images (every other one, so we have equal numbers).
         for(size_t i = 0; i < min_images; i++) {
             //Add the dog image and label.
@@ -125,9 +129,9 @@ int main(int argc, char** argv)
         //Initialize the layer sizes.
         std::vector<size_t> layer_sizes;
         layer_sizes.push_back(training_data[0].rows() * training_data[0].cols());
-        layer_sizes.push_back(10);
-        layer_sizes.push_back(10);
-        layer_sizes.push_back(10);
+        //layer_sizes.push_back(3);
+        //layer_sizes.push_back(5);
+        layer_sizes.push_back(training_data[0].cols());
         //layer_sizes.push_back(500);
         //layer_sizes.push_back(500);
         //layer_sizes.push_back(500);
@@ -135,16 +139,22 @@ int main(int argc, char** argv)
 
         //Use CPU ops for now, and build the basic model.
         anr::Ops* ops = new anr::Ops_cpu;
-        anr::Mlp nn(layer_sizes, ops, 0.7);
+        anr::Mlp nn(layer_sizes, ops, 0.5);
 
         //Calculate the dividing index (training data vs testing data).
         size_t divide_idx = (size_t)((float)training_data.size() * MLP_TRAINING_RATIO);
 
+        std::cerr << "Log: Main: Training the network." << std::endl;
+
         //Traing the mlp for as many points as requested (by the training ratio).
         for(size_t t = 0; t < 1; t++)
-            for (size_t i = 0; i < divide_idx; i++)
+            for (size_t i = 0; i < divide_idx; i++) {
                 nn.train(training_data[i], expected_data[i]);
+                //nn.print();
+                //std::cin.get();
+            }
 
+        std::cerr << "Main: Predicting using the remaining data." << std::endl;
 
         //Test the predictions, and print data.
         for (size_t i = divide_idx; i < training_data.size(); i++) {
