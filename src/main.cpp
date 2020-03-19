@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <algorithm>
+#include <random>
 
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
@@ -79,12 +81,37 @@ int main(int argc, char** argv)
 		}
 	}
 */
+  
+    //TODO: Add the data from test images and expected to the vectors.
+/*
+    //Find out the minimum number of images.
+    size_t min_images = (dog_images.size() < misc_images.size()
+         ? dog_images.size() : misc_images.size());
+
+    //Define vectors for training and expected data.
 	std::vector<anr::Mat> training_data;
     std::vector<anr::Mat> expected_data;
 
-    //TODO: Add the data from test images and expected to the vectors.
-    
+    //Add the data from the dog and test images (every other one, so we have equal numbers).
+    for(size_t i = 0; i < min_images) {
+        //Add the dog image and label.
+        training_data.append(dog_images[i]);
         
+        anr::Mat dog_expected(1, 2);
+        dog_expected.at(0, 0) = 1.0;
+        dog_expected.at(0, 1) = 0.0;
+        expected_data.push_back(dog_expected);  
+
+        
+        //Add the test image and label.
+        training_data.append(test_images[i]);
+        
+        anr::Mat test_expected(1, 2);
+        test_expected.at(0, 0) = 0.0;
+        test_expected.at(0, 1) = 1.0;
+        expected_data.push_back(test_expected);  
+    }
+*/      
     //Initialize the layer sizes.
     std::vector<size_t> layer_sizes;
     layer_sizes.push_back(training_data[0].rows() * training_data[0].cols());
