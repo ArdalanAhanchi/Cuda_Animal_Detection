@@ -85,12 +85,11 @@ int main(int argc, char** argv)
         dog_images[2].print("IMGTWO");
 
 		//Uncomment below for viewing the transform images and testing.
-		
-		/*for (int i = 0; i < transformedImages.size(); i++)
+		/*for (int i = 0; i < transformedDogImages.size(); i++)
 		{
-			if (!transformedImages[i].empty())
+			if (!transformedDogImages[i].empty())
 			{
-				cv::imshow("Dog Image", transformedImages[i]);
+				cv::imshow("Dog Image", transformedDogImages[i]);
 				cv::waitKey(0);
 			}
 		}*/

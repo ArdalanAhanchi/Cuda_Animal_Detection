@@ -305,11 +305,17 @@ std::vector<cv::Mat> ImageHandler::applyTransforms()
 		std::vector<cv::Mat> boundaryImages = applyBoundaryTransform(openImages);
 		if (!boundaryImages.empty())
 		{
-			std::vector<cv::Mat> resizedImages = applyAverageSizeTransform(boundaryImages);
+			cv::Size desiredSize(320, 320);
+			std::vector<cv::Mat> resizedImages = resizeImages(boundaryImages, desiredSize);
 			if (!resizedImages.empty())
 			{
 				resultImages = resizedImages;
 			}
+			/*std::vector<cv::Mat> resizedImages = applyAverageSizeTransform(boundaryImages);
+			if (!resizedImages.empty())
+			{
+				resultImages = resizedImages;
+			}*/
 		}
 	}
 	return resultImages;
