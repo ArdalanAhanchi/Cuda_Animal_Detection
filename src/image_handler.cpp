@@ -333,7 +333,7 @@ std::vector<anr::Mat> ImageHandler::convertToInteralMat(std::vector<cv::Mat> ima
 	for (int i = 0; i < images.size(); i++)
 	{
 		cv::Mat convertedMat;
-		anr::Mat internalMat(images[i].size().height, images[i].size().width);
+		anr::Mat internalMat(1, images[i].size().height * images[i].size().width);
 		images[i].convertTo(convertedMat, CV_32F, 1.0 / 255, 0);
 		
 		for (int row = 0; row < convertedMat.size().height; row++)

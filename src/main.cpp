@@ -122,12 +122,6 @@ int main(int argc, char** argv)
             expected_data.push_back(misc_expected);
         }
 
-        for(anr::Mat a: training_data) {
-            std::cerr << a.rows() << " " << a.cols() << std::endl;
-        }
-
-        std::cerr << "I DO GET HERE 1" << std::endl;
-
         //Initialize the layer sizes.
         std::vector<size_t> layer_sizes;
         layer_sizes.push_back(training_data[0].rows() * training_data[0].cols());
@@ -143,8 +137,6 @@ int main(int argc, char** argv)
         anr::Ops* ops = new anr::Ops_cpu;
         anr::Mlp nn(layer_sizes, ops, 0.7);
 
-        std::cerr << "I DO GET HERE 2" << std::endl;
-
         //Calculate the dividing index (training data vs testing data).
         size_t divide_idx = (size_t)((float)training_data.size() * MLP_TRAINING_RATIO);
 
@@ -152,8 +144,6 @@ int main(int argc, char** argv)
         for(size_t t = 0; t < 1; t++)
             for (size_t i = 0; i < divide_idx; i++)
                 nn.train(training_data[i], expected_data[i]);
-
-        std::cerr << "I DO GET HERE 3" << std::endl;
 
 
         //Test the predictions, and print data.
