@@ -422,8 +422,14 @@ Mat Ops_gpu::scale(const Mat& a, const type& scale) {
     //Call the operations function with the correct opcode.
     this->operation(Op_Code::_scale, output_size, a_gpu, nullptr, output_gpu);
 
-    //Transfer the data back into the output matrix and return it.
+    //Transfer the data back into the output matrix.
     this->transfer_from_gpu(output_gpu, output);
+
+    //Deallocate the memory on the GPU.
+    cudaFree(a_gpu);
+    cudaFree(output_gpu);
+
+    //Return the output matrix.
     return output;
 }
 
@@ -443,6 +449,9 @@ void Ops_gpu::sigmoid(Mat& input) {
 
     //Transfer the data back into the input matrix and override it.
     this->transfer_from_gpu(input_gpu, input);
+
+    //Deallocate the GPU allocation.
+    cudaFree(input_gpu);
 } 
 
 
@@ -461,6 +470,9 @@ void Ops_gpu::deriv_sigmoid(Mat& input) {
 
     //Transfer the data back into the input matrix and override it.
     this->transfer_from_gpu(input_gpu, input);
+
+    //Deallocate the GPU allocation.
+    cudaFree(input_gpu);
 }
 
 
@@ -479,6 +491,9 @@ void Ops_gpu::relu(Mat& input) {
 
     //Transfer the data back into the input matrix and override it.
     this->transfer_from_gpu(input_gpu, input);
+
+    //Deallocate the GPU allocation.
+    cudaFree(input_gpu);
 }
 
 
@@ -497,6 +512,9 @@ void Ops_gpu::deriv_relu(Mat& input) {
 
     //Transfer the data back into the input matrix and override it.
     this->transfer_from_gpu(input_gpu, input);
+
+    //Deallocate the GPU allocation.
+    cudaFree(input_gpu);
 }
 
 

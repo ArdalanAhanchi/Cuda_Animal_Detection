@@ -39,9 +39,9 @@ int main(int argc, char** argv)
 {
     //Temporary testing of the mlp.
     //TODO: Remove and replace with proper testing methods.
-    //return test_mlp();
-    test_mat();
-    return EXIT_SUCCESS;
+    return test_mlp();
+    //test_mat();
+    //return EXIT_SUCCESS;
 
 	std::string projectDir = std::getenv("CSS535_PROJ");
 
