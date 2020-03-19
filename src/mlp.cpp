@@ -46,8 +46,12 @@ Mlp::Mlp(const std::vector<size_t>& layer_sizes, Ops* operations, const type& ra
     this->_ops = operations;
 
     //Check the hidden layer sizes, it should be at least one.
-    if(layer_sizes.size() < 3)
-        throw "Mlp: Error: There should be at least three layers (input/hidden/output).";
+    if(layer_sizes.size() < 3) {
+        std::cerr << 
+            "Mlp: Error: There should be at least three layers (input/hidden/output)." << std::endl;
+
+        return;
+    }
 
     //Initialize all the class' dynamic arrays.
     this->_num_layers = layer_sizes.size();
@@ -91,12 +95,18 @@ Mlp::~Mlp() {
  */
 void Mlp::train(Mat& input, Mat& expected) {
     //Check if input or expected are invalid sizes.
-    if(input.rows() != 1 || input.cols() == 0 || expected.rows() != 1 || expected.cols() == 0)
-        throw "Mlp: Error: Invalid input or expected vectors passed (num_rows == 1).";
+    if(input.rows() != 1 || input.cols() == 0 || expected.rows() != 1 || expected.cols() == 0) {
+        std::cerr << 
+            "Mlp: Error: Invalid input or expected vectors passed (num_rows == 1)." << std::endl;
+
+        return;
+    }
 
     //Check if we're not set up.
-    if(this->_num_layers == 0)
-        throw "Mlp: Error: The network was not setup properly.";
+    if(this->_num_layers == 0) {
+        std::cerr <<  "Mlp: Error: The network was not setup properly." << std::endl;
+        return;
+    }
 
     //Place a shallow copy of input at the first element of the layers.
     this->_layers[0] = input;
