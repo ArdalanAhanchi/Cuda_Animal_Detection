@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <algorithm>
+#include <random>
 
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
@@ -11,6 +13,8 @@
 //Temporary test for mlp.
 #include "test_mlp.cpp"
 #include "test_mat_ops.cpp"
+
+#define MLP_TRAINING_RATIO 0.7
 
 std::string type2str(int type) {
 	std::string r;
@@ -69,8 +73,8 @@ int main(int argc, char** argv)
 		cv::Size desiredSize(transformedImages[0].size().width, transformedImages[0].size().height); //All of the dog images here should be the same size (from applyTransforms())
 		std::vector<cv::Mat> resizedTestImages = testHandler.resizeImages(testImages, desiredSize);
 
-		std::vector<anr::Mat> preparedDogImages = dogHandler.convertToInteralMat(transformedImages);
-		std::vector<anr::Mat> preparedTestImages = testHandler.convertToInteralMat(resizedTestImages);
+		std::vector<anr::Mat> training_data = dogHandler.convertToInteralMat(transformedImages);
+		std::vector<anr::Mat> expected_data = testHandler.convertToInteralMat(resizedTestImages);
 
 		//Uncomment below for viewing the transform images and testing.
 		
@@ -83,5 +87,63 @@ int main(int argc, char** argv)
 			}
 		}*/
 		
+
+        //TODO: Add the data from test images and expected to the vectors.
+        /*
+        //Find out the minimum number of images.
+        size_t min_images = (dog_images.size() < misc_images.size()
+                ? dog_images.size() : misc_images.size());
+
+        //Define vectors for training and expected data.
+        std::vector<anr::Mat> training_data;
+        std::vector<anr::Mat> expected_data;
+
+        //Add the data from the dog and test images (every other one, so we have equal numbers).
+        for(size_t i = 0; i < min_images) {
+            //Add the dog image and label.
+            training_data.append(dog_images[i]);
+
+            anr::Mat dog_expected(1, 2);
+            dog_expected.at(0, 0) = 1.0;
+            dog_expected.at(0, 1) = 0.0;
+            expected_data.push_back(dog_expected);
+
+
+            //Add the test image and label.
+            training_data.append(test_images[i]);
+
+            anr::Mat test_expected(1, 2);
+            test_expected.at(0, 0) = 0.0;
+            test_expected.at(0, 1) = 1.0;
+            expected_data.push_back(test_expected);
+        }
+        */
+        //Initialize the layer sizes.
+        std::vector<size_t> layer_sizes;
+        layer_sizes.push_back(training_data[0].rows() * training_data[0].cols());
+        layer_sizes.push_back(500);
+        layer_sizes.push_back(500);
+        layer_sizes.push_back(500);
+        layer_sizes.push_back(500);
+        layer_sizes.push_back(2);
+
+        //Use CPU ops for now, and build the basic model.
+        anr::Ops* ops = new anr::Ops_cpu;
+        anr::Mlp nn(layer_sizes, ops, 0.7);
+
+        //Calculate the dividing index (training data vs testing data).
+        size_t divide_idx = (size_t)((float)training_data.size() * MLP_TRAINING_RATIO);
+
+        //Traing the mlp for as many points as requested (by the training ratio).
+        for (size_t i = 0; i < divide_idx; i++)
+            nn.train(training_data[i], expected_data[i]);
+
+
+        //Test the predictions, and print data.
+        for (size_t i = divide_idx; i < training_data.size(); i++) {
+            anr::Mat predicted = nn.predict(training_data[i]);
+            expected_data[i].print("Expected");
+            predicted.print("Prediction");
+        }
 	}
 }
