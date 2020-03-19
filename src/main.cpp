@@ -47,14 +47,14 @@ int main(int argc, char** argv)
     //test_mat();
     //return EXIT_SUCCESS;
 
-	std::string projectDir = std::getenv("CSS535_PROJ");
-
 	//We can add more references to other resource files if time permitting
 #ifdef _WIN32
+    std::string projectDir = std::getenv("CSS535_PROJ");
 	std::string oiDogResourceFile = projectDir + "\\images\\open-images\\Dog_oi_resource.windows.txt";
 	std::string oiCatResourceFile = projectDir + "\\images\\open-images\\Cat_oi_resource.windows.txt";
 	std::string oiTestResourceFile = projectDir + "\\images\\open-images\\test_oi_resource.windows.txt";
 #elif linux
+    std::string projectDir = std::string("");
 	std::string oiDogResourceFile = "images/open-images/Dog_oi_resource.linux.txt";
 	std::string oiCatResourceFile = "images/open-images/Cat_oi_resource.linux.txt";
 	std::string oiTestResourceFile = "images/open-images/test_oi_resource.linux.txt";
