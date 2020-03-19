@@ -39,10 +39,13 @@ double ImageHandler::stringToDouble(std::string str)
 *  @param pathToResourceFile - Path to the resource file. The resource file should contain a list of pairs which contain
 *                              paths to the image label and image file.
 */
-ImageHandler::ImageHandler(std::string rootSrcPath, std::string pathToResourceFile)
+ImageHandler::ImageHandler(std::string rootSrcPath, std::string pathToResourceFile) : ImageHandler(rootSrcPath, pathToResourceFile, 0) { }
+
+ImageHandler::ImageHandler(std::string rootSrcPath, std::string pathToResourceFile, unsigned int limiter)
 {
 	_rootSrcPath = rootSrcPath;
 	_pathToResourceFile = pathToResourceFile;
+	_limiter = limiter;
 }
 
 /*
@@ -193,6 +196,11 @@ std::vector<OpenImage> ImageHandler::parseImages()
 		std::string projectDir = _rootSrcPath;
 		while (getline(fileStream, line))
 		{
+			if (_limiter > 0 && lineCount >= _limiter)
+			{
+				std::cout << "Limiter value reached. Stoping image parsing early." << std::endl;
+				break;
+			}
 			std::istringstream stringStream(line);
 			std::istream_iterator<std::string> begin(stringStream), end;
 
@@ -367,8 +375,14 @@ std::vector<cv::Mat> ImageHandler::parseRawImagesFromResource()
 		std::string projectDir = _rootSrcPath;
 		while (getline(fileStream, line))
 		{
+			if (_limiter > 0 && lineCount >= _limiter)
+			{
+				std::cout << "Limiter value reached. Stoping image parsing early." << std::endl;
+				break;
+			}
 			cv::Mat loadedImage = loadImageFromFile(projectDir + line);
 			images.push_back(loadedImage);
+			lineCount++;
 		}
 	}
 	return images;

@@ -29,6 +29,9 @@ private:
 	/* Stored reference containing the path to the resource file */
 	std::string _pathToResourceFile;
 
+	/* A limiter used for debugging. If the limiter is greater than zero, only the first X images will be loaded*/
+	unsigned int _limiter;
+
 	/*
 	*  Load and create a populate an OpenImage structure. The file being loaded is expected to be
 	*  an OpenImages label text file. The text file is expected to contain a single line which includes
@@ -68,6 +71,7 @@ private:
 	*/
 	cv::Mat loadImageFromFile(std::string pathToFile);
 
+
 public:
 	/**
 	 *  Constructor which sets the appropriate paths needed to parse and manipulate images
@@ -77,6 +81,16 @@ public:
 	 *                              paths to the image label and image file.
 	 */
 	ImageHandler(std::string rootSrcPath, std::string pathToResourceFile);
+
+	/**
+	 *  Constructor which sets the appropriate paths needed to parse and manipulate images
+	 *
+	 *  @param rootSrcPath - Path to the root of the source directory.
+	 *  @param pathToResourceFile - Path to the resource file. The resource file should contain a list of pairs which contain
+	 *                              paths to the image label and image file.
+	 *  @param limiter - Limiter used to limit the number of images loaded
+	 */
+	ImageHandler(std::string rootSrcPath, std::string pathToResourceFile, unsigned int limiter);
 
 	/*
 	*  Parse the resource file and generate a list of OpenImages

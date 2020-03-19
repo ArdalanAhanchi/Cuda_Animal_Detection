@@ -66,7 +66,7 @@ int main(int argc, char** argv)
 	int averageWidth = 0;
 	int averageHeight = 0;
 	std::vector<cv::Mat> transformedDogImages = dogHandler.applyTransforms();
-	std::vector<cv::Mat> transformedCatImages = dogHandler.applyTransforms();
+	std::vector<cv::Mat> transformedCatImages = catHandler.applyTransforms();
 	std::vector<cv::Mat> testImages = testHandler.parseRawImagesFromResource();
 	
 	dogHandler.getAverageSizes(transformedDogImages, averageWidth, averageHeight);
