@@ -10,7 +10,7 @@
 
 //Temporary test for mlp.
 #include "test_mlp.cpp"
-//#include "test_mat_ops.cpp"
+#include "test_mat_ops.cpp"
 
 std::string type2str(int type) {
 	std::string r;
@@ -39,7 +39,9 @@ int main(int argc, char** argv)
 {
     //Temporary testing of the mlp.
     //TODO: Remove and replace with proper testing methods.
-    return test_mlp();
+    //return test_mlp();
+    test_mat();
+    return EXIT_SUCCESS;
 
 	std::string projectDir = std::getenv("CSS535_PROJ");
 

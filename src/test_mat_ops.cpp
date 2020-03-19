@@ -3,6 +3,7 @@
 
 #include "mat.hpp"
 #include "ops_cpu.hpp"
+#include "ops_gpu.cuh"
 #include "ops.hpp"
 
 /*
@@ -42,8 +43,10 @@ void test_mat() {
     anr::Mat c(b, true);
     c.print("\nMatrix c");
 
-    anr::Ops_cpu ops_cpu;
-    anr::Ops* ops = &ops_cpu;
+    //anr::Ops_cpu ops_cpu;
+    //anr::Ops* ops = &ops_cpu;
+    anr::Ops_gpu ops_gpu;
+    anr::Ops* ops = &ops_gpu;
 
     anr::Mat d = ops->add(a, c);
     d.print("\nAdded a + c");
