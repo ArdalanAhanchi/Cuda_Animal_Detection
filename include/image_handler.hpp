@@ -131,6 +131,12 @@ public:
 	*/
 	std::vector<cv::Mat> applyTransforms();
 
+    /*
+    *  Wrapper method which reads the raw images and returns an opencv array.
+    *  @returns - OpenCV images that have been cropped, grayscaled, and resized
+    */
+    std::vector<cv::Mat> getRawImages();
+
 	/*
 	*  Parse images from the resource text file as OpenCV objects.
 	*  @returns - List of OpenCV mat objects.

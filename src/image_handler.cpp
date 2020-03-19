@@ -173,7 +173,7 @@ cv::Mat ImageHandler::loadImageFromFile(std::string pathToFile)
 	cv::Mat convertedMat;
 	if (!pathToFile.empty())
 	{
-		convertedMat = cv::imread(pathToFile);
+		convertedMat = cv::imread(pathToFile, 0);
 	}
 	return convertedMat;
 }
@@ -313,7 +313,7 @@ std::vector<cv::Mat> ImageHandler::applyTransforms()
 		std::vector<cv::Mat> boundaryImages = applyBoundaryTransform(openImages);
 		if (!boundaryImages.empty())
 		{
-			cv::Size desiredSize(320, 320);
+			cv::Size desiredSize(50, 50);
 			std::vector<cv::Mat> resizedImages = resizeImages(boundaryImages, desiredSize);
 			if (!resizedImages.empty())
 			{
@@ -328,6 +328,23 @@ std::vector<cv::Mat> ImageHandler::applyTransforms()
 	}
 	return resultImages;
 }
+
+
+/*
+*  Wrapper method which reads the raw images and returns an opencv array.
+*  @returns - OpenCV images that have been cropped, grayscaled, and resized
+*/
+std::vector<cv::Mat> ImageHandler::getRawImages()
+{
+	std::vector<cv::Mat> resultImages;
+	std::vector<OpenImage> openImages = parseImages();
+
+    for(size_t i = 0; i < openImages.size(); i++)
+	    resultImages.push_back(ImageHandler::convertOpenImage(openImages[i]));
+
+	return resultImages;
+}
+
 
 /*
 *  Convert an OpenCV Mat to the internal matrix type that we'll use for the convolusions and MLP

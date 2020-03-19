@@ -14,6 +14,9 @@
 #include <iostream>
 #include <cmath>                                                        //For exponents.
 
+//The N (for a NxN matrix), in which the rest of the calculations will be done on GPU.
+#define CPU_LIMIT 350
+
 namespace anr {
 
 
@@ -58,9 +61,18 @@ Mat Ops_hybrid::sub(const Mat& a, const Mat& b) {
  *  @return The results for the multiplication (only the pointer is passed by value).
  */
 Mat Ops_hybrid::mult(const Mat& a, const Mat& b)  {
-    //Call ops on cpu since add is more efficient on cpu.
-    Ops_cpu ops;
-    return ops.mult(a, b);
+    Ops* ops;
+
+    //Check if we reach the limit, and then assign it to cpu or gpu.
+    if(a.rows() > CPU_LIMIT && a.cols() > CPU_LIMIT && b.cols() > CPU_LIMIT) {
+        Ops_gpu g;        
+        ops = &g;
+    } else {
+        Ops_cpu c;
+        ops = &c;
+    }
+        
+    return ops->mult(a, b);
 }  
 
 
@@ -101,7 +113,7 @@ Mat Ops_hybrid::scale(const Mat& a, const type& scale) {
  *  @param input The matrix where we're applying the sigmoid to. 
  */
 void Ops_hybrid::sigmoid(Mat& input) {
-    //Call ops on cpu since add is more efficient on cpu.
+    //Call ops on cpu since sigmoid is more efficient on cpu.
     Ops_cpu ops;
     return ops.sigmoid(input);
 }   

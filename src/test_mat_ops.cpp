@@ -117,6 +117,15 @@ void cmp_gpu_cpu() {
     
     ops_c->mult(k, l).print("\nAfter multiplication CPU");
     ops_g->mult(k, l).print("\nAfter multiplication GPU");
+
+
+    anr::Mat m(1, 100);
+    m.randomize(-10, 10);
+    anr::Mat n(1, 100);
+    n.randomize(-5, 5);
+    
+    ops_c->add(m, n).print("\nAfter addition CPU");
+    ops_g->add(m, n).print("\nAfter addition GPU");
 }
 
 void test_mat() {
