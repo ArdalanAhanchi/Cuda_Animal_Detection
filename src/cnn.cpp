@@ -33,9 +33,8 @@ namespace anr {
      *  @param images The input matrix of pixel values.
      *  @param kernel The filter to apply.
      */
-    Mat Cnn::convolution(Mat& images, type* kernel, int kernelSizeX, int kernelSizeY)
+    Mat Cnn::convolution(Mat& images, type* kernel, Mat& output, Mat& bias, int kernelSizeX, int kernelSizeY)
     {
-        Mat output(images.rows(), images.cols());
         int i, j, m, n, mm, nn;
         int kCenterX, kCenterY;                         // center index of kernel
         float sum;                                      // temp accumulation buffer
@@ -70,8 +69,6 @@ namespace anr {
                             sum += images.data[images.cols() * rowIndex + colIndex] * kernel[kernelSizeX * mm + nn];
                     }
                 }
-                output.data[images.cols() * i + j] = sum;
-
 
             }
         }
