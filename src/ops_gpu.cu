@@ -33,7 +33,7 @@ namespace anr {
 __constant__ size_t kernel_offset[1];
 
 /** The constant value which is used for the scale kernel. */
-__constant__ type scale[1];
+__constant__ type scale_number[1];
 
 //Thes values are only used for matrix multiplication.
 __constant__ size_t a_dims[2];  /**< Number of rows [0], and cols [1] in first matrix. */
@@ -142,15 +142,16 @@ __global__ void mult_kernel(type* a_gpu, type* b_gpu, type* c_gpu) {
 
 
 /**
- *  A kernel which performs scaling of every matrix element in-place (in the same location).
+ *  A kernel which performs scaling of every matrix element and stores it in outputs.
  *  the amount of scaling is stored in a GPU constant called scale.
  *
  *  @param input location of the input matrix on GPU.
+ *  @param input location of the input matrix on GPU.
  */
-__global__ void scale_kernel(type* input) {
+__global__ void scale_kernel(type* input, type* output) {
     //Calculate the current index in the matrix and perform the scaling.
     size_t idx = kernel_offset[0] + threadIdx.x + (blockIdx.x * blockDim.x);
-    input[idx] = input[idx] * scale[0];
+    output[idx] = input[idx] * scale_number[0];
 }
 
 
@@ -416,13 +417,19 @@ Mat Ops_gpu::scale(const Mat& a, const type& scale) {
 
     //Store the scale value on the GPU's constant memory.
     type scale_host[1] = { (scale) };
-    cudaMemcpyToSymbol(scale, scale_host, sizeof(type));
+    cudaMemcpyToSymbol(scale_number, scale_host, sizeof(type));
 
     //Call the operations function with the correct opcode.
-    this->operation(Op_Code::_scale, output_size, a_gpu);
+    this->operation(Op_Code::_scale, output_size, a_gpu, nullptr, output_gpu);
 
-    //Transfer the data back into the output matrix and return it.
+    //Transfer the data back into the output matrix.
     this->transfer_from_gpu(output_gpu, output);
+
+    //Deallocate the memory on the GPU.
+    cudaFree(a_gpu);
+    cudaFree(output_gpu);
+
+    //Return the output matrix.
     return output;
 }
 
@@ -442,6 +449,9 @@ void Ops_gpu::sigmoid(Mat& input) {
 
     //Transfer the data back into the input matrix and override it.
     this->transfer_from_gpu(input_gpu, input);
+
+    //Deallocate the GPU allocation.
+    cudaFree(input_gpu);
 } 
 
 
@@ -460,6 +470,9 @@ void Ops_gpu::deriv_sigmoid(Mat& input) {
 
     //Transfer the data back into the input matrix and override it.
     this->transfer_from_gpu(input_gpu, input);
+
+    //Deallocate the GPU allocation.
+    cudaFree(input_gpu);
 }
 
 
@@ -478,6 +491,9 @@ void Ops_gpu::relu(Mat& input) {
 
     //Transfer the data back into the input matrix and override it.
     this->transfer_from_gpu(input_gpu, input);
+
+    //Deallocate the GPU allocation.
+    cudaFree(input_gpu);
 }
 
 
@@ -496,6 +512,9 @@ void Ops_gpu::deriv_relu(Mat& input) {
 
     //Transfer the data back into the input matrix and override it.
     this->transfer_from_gpu(input_gpu, input);
+
+    //Deallocate the GPU allocation.
+    cudaFree(input_gpu);
 }
 
 
@@ -634,7 +653,7 @@ void Ops_gpu::kernel_call(size_t opcode, size_t blocks, size_t threads,
 
         //Element multiplication kernel.
         case Op_Code::_scale:
-            scale_kernel<<<blocks, threads>>>(a);
+            scale_kernel<<<blocks, threads>>>(a, c);
             break;
 
         //Sigmoid kernel.
