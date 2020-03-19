@@ -52,25 +52,30 @@ int main(int argc, char** argv)
 	//We can add more references to other resource files if time permitting
 #ifdef _WIN32
 	std::string oiDogResourceFile = projectDir + "\\images\\open-images\\Dog_oi_resource.windows.txt";
+	std::string oiCatResourceFile = projectDir + "\\images\\open-images\\Cat_oi_resource.windows.txt";
 	std::string oiTestResourceFile = projectDir + "\\images\\open-images\\test_oi_resource.windows.txt";
 #elif linux
 	std::string oiDogResourceFile = "images/open-images/Dog_oi_resource.linux.txt";
+	std::string oiCatResourceFile = "images/open-images/Cat_oi_resource.linux.txt";
 	std::string oiTestResourceFile = "images/open-images/test_oi_resource.linux.txt";
 #endif
 
 	ImageHandler dogHandler(projectDir, oiDogResourceFile);
+	ImageHandler catHandler(projectDir, oiCatResourceFile);
 	ImageHandler testHandler(projectDir, oiTestResourceFile);
 	int averageWidth = 0;
 	int averageHeight = 0;
-	std::vector<cv::Mat> transformedImages = dogHandler.applyTransforms();
+	std::vector<cv::Mat> transformedDogImages = dogHandler.applyTransforms();
+	std::vector<cv::Mat> transformedCatImages = dogHandler.applyTransforms();
 	std::vector<cv::Mat> testImages = testHandler.parseRawImagesFromResource();
 	
-	dogHandler.getAverageSizes(transformedImages, averageWidth, averageHeight);
+	dogHandler.getAverageSizes(transformedDogImages, averageWidth, averageHeight);
 
-	if (transformedImages.size() > 0)
+	if (transformedDogImages.size() > 0)
 	{
 		//transform test images to same size as dog images
-		cv::Size desiredSize(transformedImages[0].size().width, transformedImages[0].size().height); //All of the dog images here should be the same size (from applyTransforms())
+		cv::Size desiredSize(transformedDogImages[0].size().width, transformedDogImages[0].size().height); //All of the dog images here should be the same size (from applyTransforms())
+		std::vector<cv::Mat> resizedCatImages = catHandler.resizeImages(transformedCatImages, desiredSize);
 		std::vector<cv::Mat> resizedTestImages = testHandler.resizeImages(testImages, desiredSize);
 
 		std::vector<anr::Mat> dog_images = dogHandler.convertToInteralMat(transformedImages);
