@@ -78,8 +78,11 @@ int main(int argc, char** argv)
 		std::vector<cv::Mat> resizedCatImages = catHandler.resizeImages(transformedCatImages, desiredSize);
 		std::vector<cv::Mat> resizedTestImages = testHandler.resizeImages(testImages, desiredSize);
 
-		std::vector<anr::Mat> dog_images = dogHandler.convertToInteralMat(transformedImages);
+		std::vector<anr::Mat> dog_images = dogHandler.convertToInteralMat(transformedDogImages);
 		std::vector<anr::Mat> misc_images = testHandler.convertToInteralMat(resizedTestImages);
+
+        dog_images[0].print("IMGONE");
+        dog_images[2].print("IMGTWO");
 
 		//Uncomment below for viewing the transform images and testing.
 		
@@ -126,10 +129,9 @@ int main(int argc, char** argv)
         //Initialize the layer sizes.
         std::vector<size_t> layer_sizes;
         layer_sizes.push_back(training_data[0].rows() * training_data[0].cols());
-        layer_sizes.push_back(100);
-        layer_sizes.push_back(100);
-        layer_sizes.push_back(100);
-        layer_sizes.push_back(100);
+        layer_sizes.push_back(10);
+        layer_sizes.push_back(10);
+        layer_sizes.push_back(10);
         //layer_sizes.push_back(500);
         //layer_sizes.push_back(500);
         //layer_sizes.push_back(500);
