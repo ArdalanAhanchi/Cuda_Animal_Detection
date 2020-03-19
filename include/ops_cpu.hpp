@@ -7,7 +7,7 @@
 namespace anr {
 
 /**
- *  An class which implements the ops interface for basic matrix operations on the cpu.
+ *  A class which implements the ops interface for basic matrix operations on the cpu.
  *  this is used as a simple baseline for the ops interface.
  *
  *  @author Ardalan Ahanchi

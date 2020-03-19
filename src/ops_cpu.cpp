@@ -1,6 +1,6 @@
 /**
- *  An implementation for a class which performs basic matrix operations on the cpu.
- *  this is used as a simple baseline for the ops interface.
+ *  An implementation for  a class which implements the ops interface for basic matrix operations on the gpu.
+ *  this is used as a total gpu implementation (all functions on the gpu).
  *
  *  @author Ardalan Ahanchi
  *  @date March 2020
@@ -118,7 +118,9 @@ Mat Ops_cpu::mult(const Mat& a, const Mat& b)  {
 Mat Ops_cpu::e_mult(const Mat& a, const Mat& b) {
     //If the matrices are not the same size, return a 0x0 matrix.
     if(a.rows() != b.rows() || a.cols() != b.cols()) {
-        std::cerr << "Ops_cpu: e_mult: Error: Matrices should be the same dimentions." << std::endl;
+        std::cerr << "Ops_cpu: e_mult: Error: Matrices should be the same dimentions." 
+            << std::endl;
+
         return Mat(0, 0);
     }
 

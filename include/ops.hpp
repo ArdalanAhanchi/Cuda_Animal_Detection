@@ -39,6 +39,17 @@ class Ops {
 
 
     /**
+     *  A function which performs an element by element multiplication of matrices a 
+     *  and b. The matrices should be the same size.
+     *
+     *  @param a The first matrix for the matrix multiplication.
+     *  @param b The second matrix for the matrix multiplication.
+     *  @return The results for the multiplication (only the pointer is passed by value).
+     */
+    virtual Mat e_mult(const Mat& a, const Mat& b) = 0;  
+
+
+    /**
      *  A function which multiplies matrix a and b, and returns a results matrix. a should
      *  have the same number of cols, as b's rows. It basically returns a * b. Should
      *  return a 0x0 matrix if error occured.
@@ -47,18 +58,7 @@ class Ops {
      *  @param b The second matrix for the matrix multiplication.
      *  @return The results for the multiplication (only the pointer is passed by value).
      */
-    virtual Mat mult(const Mat& a, const Mat& b) = 0;   
-
-
-    /**
-     *  A function which performs an element by element multiplication of matrices a 
-     *  and b. The matrices should be the same size.
-     *
-     *  @param a The first matrix for the matrix multiplication.
-     *  @param b The second matrix for the matrix multiplication.
-     *  @return The results for the multiplication (only the pointer is passed by value).
-     */
-    virtual Mat e_mult(const Mat& a, const Mat& b) = 0;   
+    virtual Mat mult(const Mat& a, const Mat& b) = 0;    
 
 
     /**
@@ -94,14 +94,6 @@ class Ops {
      *  @param input The matrix where we're applying the relu to.
      */
     virtual void relu(Mat& input) = 0;
-
-
-    /**
-     *  A method which applies the softmax function to the passed matrix.
-     *
-     *  @param input The matrix where we're applying the softmax to.
-     */
-    virtual void softmax(Mat& input) = 0;
 
 
     /**
