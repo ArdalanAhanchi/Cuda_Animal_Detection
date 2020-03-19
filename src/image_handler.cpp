@@ -361,7 +361,7 @@ std::vector<cv::Mat> ImageHandler::parseRawImagesFromResource()
 		std::string projectDir = _rootSrcPath;
 		while (getline(fileStream, line))
 		{
-			cv::Mat loadedImage = loadImageFromFile(_rootSrcPath + line);
+			cv::Mat loadedImage = loadImageFromFile(projectDir + line);
 			images.push_back(loadedImage);
 		}
 	}
