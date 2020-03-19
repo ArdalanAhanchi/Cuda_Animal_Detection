@@ -24,6 +24,14 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <CudaCompile Include="..\src\ops_gpu.cu">
+      <Filter>Source Files</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\src\ops_hybrid.cu">
+      <Filter>Source Files</Filter>
+    </CudaCompile>
+  </ItemGroup>
+  <ItemGroup>
     <CustomBuild Include="C:\Cuda_Animal_Detection\CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>

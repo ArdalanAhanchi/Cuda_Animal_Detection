@@ -16,6 +16,7 @@ namespace anr {
      *  @date March 2020
      */
     class Cnn {
+    public:
         /**
          *  Constructor which initializes the network with the proper values. The
          *  initialization depends on the sizes passed to this constructor. The layer sizes
@@ -35,17 +36,12 @@ namespace anr {
         /*
             A method for performing the convolution operation on the matrix of pixel values.
         */
-        Mat convolution(Mat& images, type* kernel, Mat& output, Mat& bias, int kernelSizeX, int kernelSizeY);
+        Mat convolution(Mat& images, type* kernel, int kernelSizeX, int kernelSizeY);
 
         Mat maxpool(Mat& input, int kernelSize, int stride);
 
     private:
-        // define 5x5 Gaussian kernel
-        type kernel[25] = { 1 / 256.0,  4 / 256.0,  6 / 256.0,  4 / 256.0, 1 / 256.0,
-                             4 / 256.0, 16 / 256.0, 24 / 256.0, 16 / 256.0, 4 / 256.0,
-                             6 / 256.0, 24 / 256.0, 36 / 256.0, 24 / 256.0, 6 / 256.0,
-                             4 / 256.0, 16 / 256.0, 24 / 256.0, 16 / 256.0, 4 / 256.0,
-                             1 / 256.0,  4 / 256.0,  6 / 256.0,  4 / 256.0, 1 / 256.0 };
+        
     };
 
 }
