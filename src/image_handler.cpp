@@ -161,6 +161,21 @@ cv::Mat ImageHandler::applyBoundaryTransform(cv::Mat img, OpenImage imgDetail)
 }
 
 /*
+*  Convert a local image into an OpenCV image
+*  @param str - Path the image file
+*  @returns OpenCV matrix (OpenCV image)
+*/
+cv::Mat ImageHandler::loadImageFromFile(std::string pathToFile)
+{
+	cv::Mat convertedMat;
+	if (!pathToFile.empty())
+	{
+		convertedMat = cv::imread(pathToFile);
+	}
+	return convertedMat;
+}
+
+/*
 *  Parse the resource file and generate a list of OpenImages
 *  @returns List of OpenImage objects containing details of the images available
 */
@@ -315,12 +330,6 @@ std::vector<anr::Mat> ImageHandler::convertToInteralMat(std::vector<cv::Mat> ima
 		anr::Mat internalMat(images[i].size().height, images[i].size().width);
 		images[i].convertTo(convertedMat, CV_32F, 1.0 / 255, 0);
 		
-		for (int t = 0; t < 10; t++)
-		{
-			printf("Original [%i]: %i\n", t, images[i].data[t]);
-			printf("     New [%i]: %f\n", t, convertedMat.data[t]);
-		}
-
 		for (int row = 0; row < convertedMat.size().height; row++)
 		{
 			for (int col = 0; col < convertedMat.size().width; col++)
@@ -332,4 +341,29 @@ std::vector<anr::Mat> ImageHandler::convertToInteralMat(std::vector<cv::Mat> ima
 	}
 
 	return convertedMats;
+}
+
+/*
+*  Parse images from the resource text file as OpenCV objects.
+*  @returns - List of OpenCV mat objects.
+*/
+std::vector<cv::Mat> ImageHandler::parseRawImagesFromResource()
+{
+	std::vector<cv::Mat> images;
+	std::ifstream fileStream(_pathToResourceFile);
+	std::cout << "Attempting to load images from resource file (raw): "
+		<< _pathToResourceFile.c_str() << std::endl;
+
+	if (fileStream.is_open())
+	{
+		std::string line;
+		unsigned int lineCount = 0;
+		std::string projectDir = _rootSrcPath;
+		while (getline(fileStream, line))
+		{
+			cv::Mat loadedImage = loadImageFromFile(_rootSrcPath + line);
+			images.push_back(loadedImage);
+		}
+	}
+	return images;
 }

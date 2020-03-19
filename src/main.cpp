@@ -46,16 +46,24 @@ int main(int argc, char** argv)
 	//We can add more references to other resource files if time permitting
 #ifdef _WIN32
 	std::string oiDogResourceFile = projectDir + "\\images\\open-images\\Dog_oi_resource.windows.txt";
+	std::string oiTestResourceFile = projectDir + "\\images\\open-images\\test_oi_resource.windows.txt";
 #elif linux
 	std::string oiDogResourceFile = projectDir + "/images/open-images/Dog_oi_resource.linux.txt";
+	std::string oiTestResourceFile = projectDir + "/images/open-images/test_oi_resource.linux.txt";
 #endif
 
+	//Uncommented the below for image loading and testing
+	/*
 	ImageHandler dogHandler(projectDir, oiDogResourceFile);
+	ImageHandler testHandler(projectDir, oiTestResourceFile);
 	std::vector<cv::Mat> transformedImages = dogHandler.applyTransforms();
 	std::vector<anr::Mat> preparedImages = dogHandler.convertToInteralMat(transformedImages);
 
-	//Can uncomment the content below to verify that the images are being loaded as expected
-	/*if (transformedImages.size() > 0)
+	std::vector<cv::Mat> testCvImages = testHandler.parseRawImagesFromResource();
+	std::vector<anr::Mat> preparedTestImages = testHandler.convertToInteralMat(testCvImages);
+	
+
+	if (transformedImages.size() > 0)
 	{
 		for (int i = 0; i < transformedImages.size(); i++)
 		{
@@ -65,5 +73,7 @@ int main(int argc, char** argv)
 				cv::waitKey(0);
 			}
 		}
-	}*/
+	}
+
+	*/
 }

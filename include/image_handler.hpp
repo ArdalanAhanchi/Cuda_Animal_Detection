@@ -61,6 +61,13 @@ private:
 	*/
 	double stringToDouble(std::string str);
 
+	/*
+	*  Convert a local image into an OpenCV image
+	*  @param str - Path the image file
+	*  @returns OpenCV matrix (OpenCV image)
+	*/
+	cv::Mat loadImageFromFile(std::string pathToFile);
+
 public:
 	/**
 	 *  Constructor which sets the appropriate paths needed to parse and manipulate images
@@ -109,6 +116,12 @@ public:
 	*  @returns - OpenCV images that have been cropped, grayscaled, and resized
 	*/
 	std::vector<cv::Mat> applyTransforms();
+
+	/*
+	*  Parse images from the resource text file as OpenCV objects.
+	*  @returns - List of OpenCV mat objects.
+	*/
+	std::vector<cv::Mat> parseRawImagesFromResource();
 };
 
 #endif
