@@ -129,10 +129,7 @@ void cmp_gpu_cpu() {
 }
 
 void test_mat() {
-    std::cout << "Running the matrix test program" << std::endl;
-
-    cmp_gpu_cpu();
-    return;    
+    std::cout << "Running the matrix test program" << std::endl; 
 
     //Capture the beginning time before the calculations.
     //auto begin_calcs = start_time();
@@ -182,4 +179,10 @@ void test_mat() {
 
     ops->sigmoid(i);
     i.print("\nAfter Sigmoid");
+}
+
+int main() {
+    std::cerr << "Starting the matrix test program" << std::endl;
+    cmp_gpu_cpu();  
+    test_mat();
 }

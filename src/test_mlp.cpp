@@ -140,7 +140,9 @@ std::cout << "\n\nRunning the mlp test linear program." << std::endl;
  *
  *  @return EXIT_SUCCESS at the end of execution.
  */
-int test_mlp() {
+int main() {
+    std::cerr << "Starting the mlp test program" << std::endl;
+
     //* Test with the CPU ops *******************
     //Define the ops class we're gonna use.
     anr::Ops* ops = new anr::Ops_hybrid;

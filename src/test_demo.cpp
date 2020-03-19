@@ -9,10 +9,11 @@
 
 #include "image_handler.hpp"
 #include "mat.hpp"
-
-//Temporary test for mlp.
-#include "test_mlp.cpp"
-#include "test_mat_ops.cpp"
+#include "ops.hpp"
+#include "ops_cpu.hpp"
+#include "ops_gpu.cuh"
+#include "ops_hybrid.cuh"
+#include "mlp.hpp"
 
 #define MLP_TRAINING_RATIO 0.7
 #define NUM_IMAGES 100
@@ -48,12 +49,6 @@ std::string type2str(int type) {
 }
 
 int main(int argc, char** argv) {
-    //Temporary testing of the mlp.
-    //TODO: Remove and replace with proper testing methods.
-    //return test_mlp();
-    //test_mat();
-    //return EXIT_SUCCESS;
-
 	//We can add more references to other resource files if time permitting
 #ifdef _WIN32
     std::string projectDir = std::getenv("CSS535_PROJ");
