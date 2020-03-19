@@ -122,6 +122,22 @@ public:
 	*  @returns - List of OpenCV mat objects.
 	*/
 	std::vector<cv::Mat> parseRawImagesFromResource();
+
+	/*
+	*  Get the average width and height of a list of OpenCV images
+	*  @param images - Images (used for average calculation)
+	*  @param width - Average width (out reference parameter)
+	*  @param height - Average height (out reference parameter)
+	*/
+	void getAverageSizes(std::vector<cv::Mat> images, int &width, int &height);
+
+	/*
+	*  Resize a list of images to a desired size
+	* @param images - List of images to resize
+	* @param desiredSize - Size to resize each image to
+	* @returns List of resized images
+	*/
+	std::vector<cv::Mat> resizeImages(std::vector<cv::Mat> images, cv::Size desiredSize);
 };
 
 #endif

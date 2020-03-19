@@ -54,28 +54,34 @@ int main(int argc, char** argv)
 	std::string oiTestResourceFile = "images/open-images/test_oi_resource.linux.txt";
 #endif
 
-	//Uncommented the below for image loading and testing
-	
 	ImageHandler dogHandler(projectDir, oiDogResourceFile);
 	ImageHandler testHandler(projectDir, oiTestResourceFile);
+	int averageWidth = 0;
+	int averageHeight = 0;
 	std::vector<cv::Mat> transformedImages = dogHandler.applyTransforms();
-	std::vector<anr::Mat> preparedImages = dogHandler.convertToInteralMat(transformedImages);
-
-	std::vector<cv::Mat> testCvImages = testHandler.parseRawImagesFromResource();
-	std::vector<anr::Mat> preparedTestImages = testHandler.convertToInteralMat(testCvImages);
+	std::vector<cv::Mat> testImages = testHandler.parseRawImagesFromResource();
 	
-/*
+	dogHandler.getAverageSizes(transformedImages, averageWidth, averageHeight);
+
 	if (transformedImages.size() > 0)
 	{
-		for (int i = 0; i < transformedImages.size(); i++)
+		//transform test images to same size as dog images
+		cv::Size desiredSize(transformedImages[0].size().width, transformedImages[0].size().height); //All of the dog images here should be the same size (from applyTransforms())
+		std::vector<cv::Mat> resizedTestImages = testHandler.resizeImages(testImages, desiredSize);
+
+		std::vector<anr::Mat> preparedDogImages = dogHandler.convertToInteralMat(transformedImages);
+		std::vector<anr::Mat> preparedTestImages = testHandler.convertToInteralMat(resizedTestImages);
+
+		//Uncomment below for viewing the transform images and testing.
+		
+		/*for (int i = 0; i < transformedImages.size(); i++)
 		{
 			if (!transformedImages[i].empty())
 			{
 				cv::imshow("Dog Image", transformedImages[i]);
 				cv::waitKey(0);
 			}
-		}
+		}*/
+		
 	}
-*/
-	
 }

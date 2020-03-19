@@ -367,3 +367,49 @@ std::vector<cv::Mat> ImageHandler::parseRawImagesFromResource()
 	}
 	return images;
 }
+
+/*
+*  Get the average width and height of a list of OpenCV images
+*  @param images - Images (used for average calculation)
+*  @param width - Average width (out reference parameter)
+*  @param height - Average height (out reference parameter)
+*/
+void ImageHandler::getAverageSizes(std::vector<cv::Mat> images, int& width, int& height)
+{
+	std::cout << "Attempting to apply resize transform on images..." << std::endl;
+	std::vector<cv::Mat> resizedImages;
+	unsigned int totalWidth = 0;
+	unsigned int totalHeight = 0;
+	unsigned int averageWidth = 0;
+	unsigned int averageHeight = 0;
+
+	//Calculate the average image size
+	for (int i = 0; i < images.size(); i++)
+	{
+		totalWidth += images[i].size().width;
+		totalHeight += images[i].size().height;
+	}
+
+	width = int(totalWidth / images.size());
+	height = int(totalHeight / images.size());
+}
+
+/*
+*  Resize a list of images to a desired size
+* @param images - List of images to resize
+* @param desiredSize - Size to resize each image to
+* @returns List of resized images
+*/
+std::vector<cv::Mat> ImageHandler::resizeImages(std::vector<cv::Mat> images, cv::Size desiredSize)
+{
+	std::vector<cv::Mat> resizedImages;
+
+	for (int i = 0; i < images.size(); i++)
+	{
+		cv::Mat resizedImage;
+		cv::resize(images[i], resizedImage, desiredSize, 0, 0);
+		resizedImages.push_back(resizedImage);
+	}
+
+	return resizedImages;
+}
