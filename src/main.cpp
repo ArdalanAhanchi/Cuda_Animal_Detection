@@ -39,7 +39,7 @@ int main(int argc, char** argv)
 {
     //Temporary testing of the mlp.
     //TODO: Remove and replace with proper testing methods.
-    return test_mlp();
+    //return test_mlp();
     //test_mat();
     //return EXIT_SUCCESS;
 
@@ -50,12 +50,12 @@ int main(int argc, char** argv)
 	std::string oiDogResourceFile = projectDir + "\\images\\open-images\\Dog_oi_resource.windows.txt";
 	std::string oiTestResourceFile = projectDir + "\\images\\open-images\\test_oi_resource.windows.txt";
 #elif linux
-	std::string oiDogResourceFile = projectDir + "/images/open-images/Dog_oi_resource.linux.txt";
-	std::string oiTestResourceFile = projectDir + "/images/open-images/test_oi_resource.linux.txt";
+	std::string oiDogResourceFile = "images/open-images/Dog_oi_resource.linux.txt";
+	std::string oiTestResourceFile = "images/open-images/test_oi_resource.linux.txt";
 #endif
 
 	//Uncommented the below for image loading and testing
-	/*
+	
 	ImageHandler dogHandler(projectDir, oiDogResourceFile);
 	ImageHandler testHandler(projectDir, oiTestResourceFile);
 	std::vector<cv::Mat> transformedImages = dogHandler.applyTransforms();
@@ -64,7 +64,7 @@ int main(int argc, char** argv)
 	std::vector<cv::Mat> testCvImages = testHandler.parseRawImagesFromResource();
 	std::vector<anr::Mat> preparedTestImages = testHandler.convertToInteralMat(testCvImages);
 	
-
+/*
 	if (transformedImages.size() > 0)
 	{
 		for (int i = 0; i < transformedImages.size(); i++)
@@ -76,6 +76,6 @@ int main(int argc, char** argv)
 			}
 		}
 	}
-
-	*/
+*/
+	
 }

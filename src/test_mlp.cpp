@@ -55,7 +55,7 @@ void test_mlp_xor(anr::Ops* ops) {
     anr::Mlp nn(layer_sizes, ops, 0.8);
     
     //Traing the mlp.
-    for(size_t t = 0; t < 5000; t++)
+    for(size_t t = 0; t < 300; t++)
         for(size_t i = 0; i < training_data.size(); i++)
             nn.train(training_data[i], expected_data[i]);
 
@@ -76,7 +76,7 @@ void test_mlp_xor(anr::Ops* ops) {
  *  prints results. It trains for 2000 times to get a decent accuracy.
  */
 void test_mlp_lin(anr::Ops* ops) {
-std::cout << "Running the mlp test linear program." << std::endl;
+std::cout << "\n\nRunning the mlp test linear program." << std::endl;
 
     std::vector<anr::Mat> training_data;
     std::vector<anr::Mat> expected_data;
@@ -133,7 +133,7 @@ std::cout << "Running the mlp test linear program." << std::endl;
 int test_mlp() {
     //* Test with the CPU ops *******************
     //Define the ops class we're gonna use.
-    /*anr::Ops* ops = new anr::Ops_cpu;
+    anr::Ops* ops = new anr::Ops_cpu;
 
     //Test both functions.
     test_mlp_xor(ops);
@@ -141,8 +141,7 @@ int test_mlp() {
 
     //Dekete the ops since we're done.
     delete ops;
-*/
-
+/*
     //* Test with the GPU ops *******************
     //Define the ops class we're gonna use.
     anr::Ops* ops = new anr::Ops_gpu;
@@ -153,7 +152,7 @@ int test_mlp() {
 
     //Dekete the ops since we're done.
     delete ops;
-
+*/
 
     return EXIT_SUCCESS;
 }
