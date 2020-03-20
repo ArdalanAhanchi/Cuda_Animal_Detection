@@ -66,19 +66,19 @@ int main(int argc, char** argv) {
 	ImageHandler dogHandler(projectDir, oiDogResourceFile, NUM_IMAGES);
 	ImageHandler catHandler(projectDir, oiCatResourceFile, NUM_IMAGES);
 	ImageHandler testHandler(projectDir, oiTestResourceFile, NUM_IMAGES);
-	
+
 	std::vector<cv::Mat> transformedDogImages = dogHandler.applyTransforms();
 	std::vector<cv::Mat> transformedCatImages = catHandler.applyTransforms();
 	std::vector<cv::Mat> testImages = testHandler.parseRawImagesFromResource();
     std::vector<cv::Mat> rawDogImages = dogHandler.getRawImages();
-	
+
     int averageWidth = 0, averageHeight = 0;
 	dogHandler.getAverageSizes(transformedDogImages, averageWidth, averageHeight);
 
 	if (transformedDogImages.size() > 0) {
 		//transform test images to same size as dog images
         //All of the dog images here should be the same size (from applyTransforms())
-		cv::Size desiredSize(transformedDogImages[0].size().width, transformedDogImages[0].size().height); 
+		cv::Size desiredSize(transformedDogImages[0].size().width, transformedDogImages[0].size().height);
 		std::vector<cv::Mat> resizedCatImages = catHandler.resizeImages(transformedCatImages, desiredSize);
 		std::vector<cv::Mat> resizedTestImages = testHandler.resizeImages(testImages, desiredSize);
 
@@ -92,7 +92,7 @@ int main(int argc, char** argv) {
 				cv::waitKey(0);
 			}
 	    }*/
-       
+
         //Find out the minimum number of images.
         size_t min_images = (dog_images.size() < misc_images.size()
                 ? dog_images.size() : misc_images.size());
@@ -132,10 +132,10 @@ int main(int argc, char** argv) {
 
         //Initialize the layer sizes.
         std::vector<size_t> layer_sizes;
-        layer_sizes.push_back(50 * 50);
+        layer_sizes.push_back(64 * 64);
         layer_sizes.push_back(100);
         //layer_sizes.push_back(500);
-        layer_sizes.push_back(50);
+        //layer_sizes.push_back(50);
         layer_sizes.push_back(20);
         layer_sizes.push_back(2);
 
@@ -177,22 +177,22 @@ int main(int argc, char** argv) {
 
             //Add a seperator.
             std::cout << "Image " << i << " : " ;
-            
+
             //Print the prediction (first check if it's a dog, then if it's not).
-            if(predicted.get(0, 0) >= 0.5)
-                std::cout << "I might be a DOG" << std::endl;
-            else if(predicted.get(0, 1) > 0.5)
-               std::cout << "I might be a NOT A DOG" << std::endl;
+            //if(predicted.get(0, 0) >= 0.5)
+            //    std::cout << "I might be a DOG" << std::endl;
+            //else if(predicted.get(0, 1) > 0.5)
+            //   std::cout << "I might be a NOT A DOG" << std::endl;
 
             //Display the image (For the demo).
-            cv::imshow("Image " + std::to_string(i), training_data_repr[i]);
-            cv::waitKey(0);
-            cv::destroyAllWindows();
+            //cv::imshow("Image " + std::to_string(i), training_data_repr[i]);
+            //cv::waitKey(0);
+            //cv::destroyAllWindows();
         }
 
         //Print the calculation accuracy.
-        //std::cout << "\nResults: Correct=" << correct << " Total=" 
-        //    << (training_data.size() - divide_idx) << " Accuracy=" 
-        //    << float(correct) / float(training_data.size() - divide_idx) << std::endl;
+        std::cout << "\nResults: Correct=" << correct << " Total="
+            << (training_data.size() - divide_idx) << " Accuracy="
+            << float(correct) / float(training_data.size() - divide_idx) << std::endl;
 	}
 }
