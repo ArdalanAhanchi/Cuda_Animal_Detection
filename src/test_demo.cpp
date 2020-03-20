@@ -146,7 +146,8 @@ int main(int argc, char** argv) {
         anr::Cnn cn;
         for (int i = 0; i < training_data.size(); i++)
         {
-            cn.convolution(training_data[i], kernel, 5, 5);
+            //cn.maxpool(training_data[i], 2, 2);
+            training_data[i] = cn.convolution(training_data[i], kernel, 5, 5);
         }
         //Calculate the dividing index (training data vs testing data).
         size_t divide_idx = (size_t)((float)training_data.size() * MLP_TRAINING_RATIO);
@@ -179,15 +180,15 @@ int main(int argc, char** argv) {
             std::cout << "Image " << i << " : " ;
 
             //Print the prediction (first check if it's a dog, then if it's not).
-            //if(predicted.get(0, 0) >= 0.5)
-            //    std::cout << "I might be a DOG" << std::endl;
-            //else if(predicted.get(0, 1) > 0.5)
-            //   std::cout << "I might be a NOT A DOG" << std::endl;
+            if(predicted.get(0, 0) >= 0.5)
+                std::cout << "I might be a DOG" << std::endl;
+            else if(predicted.get(0, 1) > 0.5)
+               std::cout << "I might be a NOT A DOG" << std::endl;
 
             //Display the image (For the demo).
-            //cv::imshow("Image " + std::to_string(i), training_data_repr[i]);
-            //cv::waitKey(0);
-            //cv::destroyAllWindows();
+            /*cv::imshow("Image " + std::to_string(i), training_data_repr[i]);
+            cv::waitKey(0);
+            cv::destroyAllWindows();*/
         }
 
         //Print the calculation accuracy.
