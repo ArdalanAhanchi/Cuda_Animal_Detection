@@ -45,7 +45,8 @@ Mat::Mat(const size_t& rows, const size_t& cols) {
     //Set the class variables.
     this->_rows = rows;
     this->_cols = cols;
-    this->_ref_count = new size_t(0);
+    this->_ref_count = new size_t;
+    *(this->_ref_count) = 1;
 }
 
 
@@ -99,8 +100,9 @@ Mat::Mat(const Mat& copy, bool transpose) {
                 this->data[r * this->_cols + c] = copy.data[r * this->_cols + c];
     }
 
-    //Initialize the reference count to 0.
-    this->_ref_count = new size_t(0);
+    //Initialize the reference count to 1.
+    this->_ref_count = new size_t;
+    *(this->_ref_count) = 1;
 }
 
 
@@ -209,21 +211,20 @@ Mat& Mat::operator=(const Mat& other) {
  *  count is already 0 (not referenced elsewhere).
  */
 void Mat::deallocate() {
-    //Deallocate if not nullptr, and if not referenced.
-    if(this->data != nullptr && *(this->_ref_count) <= 0) {
-         delete[] this->data;
-         this->data = nullptr;
-    }
-    
-    //Deallocate the refence count if it's not being used.
-    if(this->_ref_count != nullptr && *(this->_ref_count) <= 0) {
-        delete this->_ref_count;
-        this->_ref_count = nullptr;
-    }
-
-    //Reduce the reference count by one.
-    if(this->_ref_count != nullptr)
+    //Check if the reference count is nullptr.
+    if(this->_ref_count != nullptr) {
+        //Reduce the reference count by one.
         *(this->_ref_count) -= 1;
+
+        //Deallocate if not nullptr, and if not referenced.
+        if(this->data != nullptr && *(this->_ref_count) <= 0) {
+            delete[] this->data;
+            this->data = nullptr;
+
+            delete this->_ref_count;
+            this->_ref_count = nullptr;
+        }
+    }
 }
 
 }

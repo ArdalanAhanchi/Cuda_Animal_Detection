@@ -131,17 +131,18 @@ int main(int argc, char** argv) {
 
         //Initialize the layer sizes.
         std::vector<size_t> layer_sizes;
-        layer_sizes.push_back(50 * 50);
+        layer_sizes.push_back(64 * 64);
         layer_sizes.push_back(100);
         //layer_sizes.push_back(500);
-        layer_sizes.push_back(50);
+        //layer_sizes.push_back(50);
         layer_sizes.push_back(20);
         layer_sizes.push_back(2);
 
 
         //Use CPU ops for now, and build the basic model.
-        anr::Ops* ops = new anr::Ops_hybrid;
-        anr::Mlp nn(layer_sizes, ops, 0.8);
+        //anr::Ops* ops = new anr::Ops_hybrid;
+        anr::Ops* ops = new anr::Ops_cpu;
+        anr::Mlp nn(layer_sizes, ops, 0.6);
 
         //Calculate the dividing index (training data vs testing data).
         size_t divide_idx = (size_t)((float)training_data.size() * MLP_TRAINING_RATIO);
@@ -174,20 +175,20 @@ int main(int argc, char** argv) {
             std::cout << "Image " << i << " : " ;
             
             //Print the prediction (first check if it's a dog, then if it's not).
-            if(predicted.get(0, 0) >= 0.5)
-                std::cout << "I might be a DOG" << std::endl;
-            else if(predicted.get(0, 1) > 0.5)
-               std::cout << "I might be a NOT A DOG" << std::endl;
+            //if(predicted.get(0, 0) >= 0.5)
+            //    std::cout << "I might be a DOG" << std::endl;
+            //else if(predicted.get(0, 1) > 0.5)
+            //   std::cout << "I might be a NOT A DOG" << std::endl;
 
             //Display the image (For the demo).
-            cv::imshow("Image " + std::to_string(i), training_data_repr[i]);
-            cv::waitKey(0);
-            cv::destroyAllWindows();
+            //cv::imshow("Image " + std::to_string(i), training_data_repr[i]);
+            //cv::waitKey(0);
+            //cv::destroyAllWindows();
         }
 
         //Print the calculation accuracy.
-        //std::cout << "\nResults: Correct=" << correct << " Total=" 
-        //    << (training_data.size() - divide_idx) << " Accuracy=" 
-        //    << float(correct) / float(training_data.size() - divide_idx) << std::endl;
+        std::cout << "\nResults: Correct=" << correct << " Total=" 
+            << (training_data.size() - divide_idx) << " Accuracy=" 
+            << float(correct) / float(training_data.size() - divide_idx) << std::endl;
 	}
 }

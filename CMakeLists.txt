@@ -32,5 +32,8 @@ target_link_libraries( test_mat ${OpenCV_LIBS} )
 add_executable( test_mlp ./src/test_mlp.cpp ./src/open_image.cpp ./src/mat.cpp ./src/mlp.cpp ./src/ops_cpu.cpp ./src/ops_gpu.cu ./src/ops_hybrid.cu ./src/cnn.cpp ./src/image_handler.cpp)
 target_link_libraries( test_mlp ${OpenCV_LIBS} )
 
+add_executable( test_ops ./src/test_ops.cpp ./src/open_image.cpp ./src/mat.cpp ./src/mlp.cpp ./src/ops_cpu.cpp ./src/ops_gpu.cu ./src/ops_hybrid.cu ./src/cnn.cpp ./src/image_handler.cpp)
+target_link_libraries( test_ops ${OpenCV_LIBS} )
+
 
 

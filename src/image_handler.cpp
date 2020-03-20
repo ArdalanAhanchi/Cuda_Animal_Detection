@@ -313,7 +313,7 @@ std::vector<cv::Mat> ImageHandler::applyTransforms()
 		std::vector<cv::Mat> boundaryImages = applyBoundaryTransform(openImages);
 		if (!boundaryImages.empty())
 		{
-			cv::Size desiredSize(50, 50);
+			cv::Size desiredSize(64, 64);
 			std::vector<cv::Mat> resizedImages = resizeImages(boundaryImages, desiredSize);
 			if (!resizedImages.empty())
 			{

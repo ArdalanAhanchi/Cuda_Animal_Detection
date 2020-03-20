@@ -4,16 +4,15 @@
 #include "mat.hpp"
 #include "ops_cpu.hpp"
 #include "ops_gpu.cuh"
+#include "ops_hybrid.cuh"
 #include "ops.hpp"
 
 /*
-auto start_time()
-{
+auto start_time() {
     return std::chrono::high_resolution_clock::now();
 }
 
-double calc_time(std::chrono::high_resolution_clock::time_point begin)
-{
+double calc_time(std::chrono::high_resolution_clock::time_point begin) {
     auto total_time = std::chrono::high_resolution_clock::now() - begin;
     double time = std::chrono::duration<double>(total_time).count();
     return time;
@@ -183,6 +182,6 @@ void test_mat() {
 
 int main() {
     std::cerr << "Starting the matrix test program" << std::endl;
-    cmp_gpu_cpu();  
+    //cmp_gpu_cpu();  
     test_mat();
 }
