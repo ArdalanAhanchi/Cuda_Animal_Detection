@@ -14,6 +14,7 @@
 #include "ops_gpu.cuh"
 #include "ops_hybrid.cuh"
 #include "mlp.hpp"
+#include "cnn.hpp"
 
 #define MLP_TRAINING_RATIO 0.7
 #define NUM_IMAGES 100
@@ -142,7 +143,11 @@ int main(int argc, char** argv) {
         //Use CPU ops for now, and build the basic model.
         anr::Ops* ops = new anr::Ops_hybrid;
         anr::Mlp nn(layer_sizes, ops, 0.8);
-
+        anr::Cnn cn;
+        for (int i = 0; i < training_data.size(); i++)
+        {
+            cn.convolution(training_data[i], kernel, 5, 5);
+        }
         //Calculate the dividing index (training data vs testing data).
         size_t divide_idx = (size_t)((float)training_data.size() * MLP_TRAINING_RATIO);
 
