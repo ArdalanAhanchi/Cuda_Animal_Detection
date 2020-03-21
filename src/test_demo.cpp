@@ -15,8 +15,8 @@
 #include "ops_hybrid.cuh"
 #include "mlp.hpp"
 
-#define MLP_TRAINING_RATIO 0.7
-#define NUM_IMAGES 100
+#define MLP_TRAINING_RATIO 0.8
+#define NUM_IMAGES 200
 
 // define 5x5 Gaussian kernel
 anr::type kernel[25] = { 1 / 256.0,  4 / 256.0,  6 / 256.0,  4 / 256.0, 1 / 256.0,
@@ -140,8 +140,8 @@ int main(int argc, char** argv) {
 
 
         //Use CPU ops for now, and build the basic model.
-        //anr::Ops* ops = new anr::Ops_hybrid;
-        anr::Ops* ops = new anr::Ops_cpu;
+        anr::Ops* ops = new anr::Ops_hybrid;
+        //anr::Ops* ops = new anr::Ops_cpu;
         anr::Mlp nn(layer_sizes, ops, 0.6);
 
         //Calculate the dividing index (training data vs testing data).
@@ -150,7 +150,7 @@ int main(int argc, char** argv) {
         std::cerr << "Log: Main: Training the network." << std::endl;
 
         //Traing the mlp for as many points as requested (by the training ratio).
-        for(size_t t = 0; t < 20; t++)
+        for(size_t t = 0; t < 5; t++)
             for (size_t i = 0; i < divide_idx; i++)
                 nn.train(training_data[i], expected_data[i]);
 
@@ -165,14 +165,14 @@ int main(int argc, char** argv) {
             //Check if the predicted results were on the same priority bracked than expected.
             if(predicted.get(0, 0) >= 0.5 && expected_data[i].get(0, 0) == 1.0)
                 correct++;
-            else if(predicted.get(0, 1) > 0.5 && expected_data[i].get(0, 1) == 1.0)
+            else if(predicted.get(0, 1) >= 0.5 && expected_data[i].get(0, 1) == 1.0)
                 correct++;
 
-            expected_data[i].print("\nExpected");
-            predicted.print("Prediction");
+            //expected_data[i].print("\nExpected");
+            //predicted.print("Prediction");
 
             //Add a seperator.
-            std::cout << "Image " << i << " : " ;
+            //std::cout << "Image " << i << " : " ;
             
             //Print the prediction (first check if it's a dog, then if it's not).
             //if(predicted.get(0, 0) >= 0.5)

@@ -18,8 +18,8 @@
 namespace anr {
 
 //Min/Max numbers used for random number generation.
-#define MAT_RAND_MAX 0.50
-#define MAT_RAND_MIN -0.50
+#define MAT_RAND_MAX 0.5
+#define MAT_RAND_MIN -0.5
 
 //Min/Max values for Step Down/Up functionality.
 #define STEP_HIGH 0.9
@@ -69,7 +69,7 @@ Mlp::Mlp(const std::vector<size_t>& layer_sizes, Ops* operations, const type& ra
 
         //Add the biases matrix to the biases, and randomize it.
         this->_biases[i] = Mat(1, layer_sizes[i + 1]);
-        this->_biases[i].randomize(MAT_RAND_MIN, MAT_RAND_MAX);
+        //this->_biases[i].randomize(MAT_RAND_MIN, MAT_RAND_MAX);
     }
 }
 
@@ -140,6 +140,9 @@ void Mlp::train(Mat& input, Mat& expected) {
         //Apply the derivative of sigmoid to it.
         this->_ops->deriv_sigmoid(bias_gradient_temp);
 
+        //Apply the derivative of Relu to it.
+        //this->_ops->deriv_relu(bias_gradient_temp);
+
         //Multiply element by element and set the bias gradient.
         this->_bias_gradients[i - 1] = this->_ops->e_mult(temp, bias_gradient_temp);
 
@@ -206,10 +209,10 @@ void Mlp::forward(Mat& input) {
 
     //Go through the layers and compute the layers (up to the output).
     for(size_t i = 0; i < this->_num_layers - 1; i++) {
-        Mat layer;
-        layer = this->_ops->mult(this->_layers[i], this->_weights[i]); //Multiply the weights.
-        layer = this->_ops->add(layer, this->_biases[i]);              //Add the biases.
-        this->_ops->sigmoid(layer);                                    //Apply sigmoid.
+        Mat layer = this->_ops->mult(this->_layers[i], this->_weights[i]);  //Multiply the weights.
+        layer = this->_ops->add(layer, this->_biases[i]);                   //Add the biases.
+        this->_ops->sigmoid(layer);                                         //Apply sigmoid.
+        //this->_ops->relu(layer);                                          //Apply ReLu.
 
         //Assign the layer build to the correct index.
         this->_layers[i + 1] = layer;
