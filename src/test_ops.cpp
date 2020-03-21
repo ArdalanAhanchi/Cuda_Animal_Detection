@@ -103,8 +103,8 @@ int main() {
     ops_classes.push_back(new anr::Ops_gpu);
     ops_modes.push_back("gpu");
 
-    //ops_classes.push_back(new Ops_hybrid);
-    //ops_modes.push_back("hybrid");
+    ops_classes.push_back(new anr::Ops_hybrid);
+    ops_modes.push_back("hybrid");
     
 
     //Call runner with different values.

@@ -182,13 +182,8 @@ int main(int argc, char** argv) {
             //predicted.print("Prediction");
 
             //Add a seperator.
-<<<<<<< HEAD
             //std::cout << "Image " << i << " : " ;
-            
-=======
-            std::cout << "Image " << i << " : " ;
 
->>>>>>> c7d2421c517dce0fd02ab284ebc1822c164aab1a
             //Print the prediction (first check if it's a dog, then if it's not).
             if(predicted.get(0, 0) >= 0.5)
                 std::cout << "I might be a DOG" << std::endl;
