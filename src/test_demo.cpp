@@ -183,7 +183,7 @@ int main(int argc, char** argv) {
 
             //Add a seperator.
             //std::cout << "Image " << i << " : " ;
-            
+
             std::cout << "Image " << i << " : " ;
             //Print the prediction (first check if it's a dog, then if it's not).
             if(predicted.get(0, 0) >= 0.5)
