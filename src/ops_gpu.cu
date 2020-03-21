@@ -112,8 +112,7 @@ __global__ void mult_kernel(type* a_gpu, type* b_gpu, type* c_gpu) {
 	type sum_c = 0;
 
 	//Go through every tile (in a single direction).
-	for(size_t t = 0; t < ceil((a_dims[1] / (type) TILE)) ; t++)
-    {
+	for(size_t t = 0; t < ceil((a_dims[1] / (type) TILE)) ; t++) {
         //Load from A matrix into shared memory tile (if not a boundry).
         a_tile[(tx * TILE) + ty] = 
             (row < a_dims[0] && ((t * TILE) + ty) < a_dims[1]) ? 

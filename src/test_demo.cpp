@@ -85,14 +85,6 @@ int main(int argc, char** argv) {
 		std::vector<anr::Mat> dog_images = dogHandler.convertToInteralMat(transformedDogImages);
 		std::vector<anr::Mat> misc_images = testHandler.convertToInteralMat(resizedTestImages);
 
-		//Uncomment below for viewing the transform images and testing.
-		/*for (int i = 0; i < transformedDogImages.size(); i++) {
-			if (!transformedDogImages[i].empty()) {
-				cv::imshow("Dog Image", transformedDogImages[i]);
-				cv::waitKey(0);
-			}
-	    }*/
-
         //Find out the minimum number of images.
         size_t min_images = (dog_images.size() < misc_images.size()
                 ? dog_images.size() : misc_images.size());
