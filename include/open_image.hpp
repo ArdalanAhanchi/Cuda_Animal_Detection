@@ -1,29 +1,36 @@
+/**
+ *  Simple structure responsible for containing the data parsed from a resource
+ *  file containing information (data and paths) for an OpenImage file
+ *
+ *  @author Drew Nelson
+ *  @date March 2020
+ */
+
 #ifndef OPEN_IMAGE_HPP
 #define OPEN_IMAGE_HPP
 #include <string>
 
-///<summary>Simple structure to contain image information for an image file from OpenImages (Google)</summary>
 struct OpenImage
 {
-	///<summary>File path to the image of which this structure contains data for</summary>
+	/* File path to the image of which this structure contains data for */
 	std::string pathToImage;
 
-	///<summary>Keyword used to obtain this image</summary>
+	/* Keyword used to obtain this image */
 	std::string filterDescription;
 
-	///<summary>Left X position of the boundary box</summary>
+	/* Left X position of the boundary box */
 	double left = 0.0;
 
-	///<summary>Top Y poition of the boundary box</summary>
+	/* Top Y poition of the boundary box */
 	double top = 0.0;
 
-	///<summary>Right X poition of the boundary box</summary>
+	/* Right X poition of the boundary box */
 	double right = 0.0;
 
-	///<summary>Bottom Y poition of the boundary box</summary>
+	/* Bottom Y poition of the boundary box */
 	double bottom = 0.0;
 
-	///<summary>Utility method used to print the contents of this structure</summary>
+	/* Utility method used to print the contents of this structure */
 	void print();
 };
 

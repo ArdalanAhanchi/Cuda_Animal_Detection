@@ -14,6 +14,7 @@
 #include "ops_gpu.cuh"
 #include "ops_hybrid.cuh"
 #include "mlp.hpp"
+#include "cnn.hpp"
 
 #define MLP_TRAINING_RATIO 0.8
 #define NUM_IMAGES 200
@@ -65,19 +66,19 @@ int main(int argc, char** argv) {
 	ImageHandler dogHandler(projectDir, oiDogResourceFile, NUM_IMAGES);
 	ImageHandler catHandler(projectDir, oiCatResourceFile, NUM_IMAGES);
 	ImageHandler testHandler(projectDir, oiTestResourceFile, NUM_IMAGES);
-	
+
 	std::vector<cv::Mat> transformedDogImages = dogHandler.applyTransforms();
 	std::vector<cv::Mat> transformedCatImages = catHandler.applyTransforms();
 	std::vector<cv::Mat> testImages = testHandler.parseRawImagesFromResource();
     std::vector<cv::Mat> rawDogImages = dogHandler.getRawImages();
-	
+
     int averageWidth = 0, averageHeight = 0;
 	dogHandler.getAverageSizes(transformedDogImages, averageWidth, averageHeight);
 
 	if (transformedDogImages.size() > 0) {
 		//transform test images to same size as dog images
         //All of the dog images here should be the same size (from applyTransforms())
-		cv::Size desiredSize(transformedDogImages[0].size().width, transformedDogImages[0].size().height); 
+		cv::Size desiredSize(transformedDogImages[0].size().width, transformedDogImages[0].size().height);
 		std::vector<cv::Mat> resizedCatImages = catHandler.resizeImages(transformedCatImages, desiredSize);
 		std::vector<cv::Mat> resizedTestImages = testHandler.resizeImages(testImages, desiredSize);
 
@@ -91,7 +92,7 @@ int main(int argc, char** argv) {
 				cv::waitKey(0);
 			}
 	    }*/
-       
+
         //Find out the minimum number of images.
         size_t min_images = (dog_images.size() < misc_images.size()
                 ? dog_images.size() : misc_images.size());
@@ -141,8 +142,17 @@ int main(int argc, char** argv) {
 
         //Use CPU ops for now, and build the basic model.
         anr::Ops* ops = new anr::Ops_hybrid;
+
         //anr::Ops* ops = new anr::Ops_cpu;
         anr::Mlp nn(layer_sizes, ops, 0.6);
+
+        //TODO: Fix the sizing issues.
+        //anr::Cnn cn;
+        //for (int i = 0; i < training_data.size(); i++)
+        //{
+        //    //cn.maxpool(training_data[i], 2, 2);
+        //    training_data[i] = cn.convolution(training_data[i], kernel, 5, 5);
+        //}
 
         //Calculate the dividing index (training data vs testing data).
         size_t divide_idx = (size_t)((float)training_data.size() * MLP_TRAINING_RATIO);
@@ -172,23 +182,28 @@ int main(int argc, char** argv) {
             //predicted.print("Prediction");
 
             //Add a seperator.
+<<<<<<< HEAD
             //std::cout << "Image " << i << " : " ;
             
+=======
+            std::cout << "Image " << i << " : " ;
+
+>>>>>>> c7d2421c517dce0fd02ab284ebc1822c164aab1a
             //Print the prediction (first check if it's a dog, then if it's not).
-            //if(predicted.get(0, 0) >= 0.5)
-            //    std::cout << "I might be a DOG" << std::endl;
-            //else if(predicted.get(0, 1) > 0.5)
-            //   std::cout << "I might be a NOT A DOG" << std::endl;
+            if(predicted.get(0, 0) >= 0.5)
+                std::cout << "I might be a DOG" << std::endl;
+            else if(predicted.get(0, 1) > 0.5)
+               std::cout << "I might be a NOT A DOG" << std::endl;
 
             //Display the image (For the demo).
-            //cv::imshow("Image " + std::to_string(i), training_data_repr[i]);
-            //cv::waitKey(0);
-            //cv::destroyAllWindows();
+            /*cv::imshow("Image " + std::to_string(i), training_data_repr[i]);
+            cv::waitKey(0);
+            cv::destroyAllWindows();*/
         }
 
         //Print the calculation accuracy.
-        std::cout << "\nResults: Correct=" << correct << " Total=" 
-            << (training_data.size() - divide_idx) << " Accuracy=" 
+        std::cout << "\nResults: Correct=" << correct << " Total="
+            << (training_data.size() - divide_idx) << " Accuracy="
             << float(correct) / float(training_data.size() - divide_idx) << std::endl;
 	}
 }
