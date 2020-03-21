@@ -120,5 +120,5 @@ int main() {
     for(anr::Ops* ops: ops_classes)
         delete ops;
     
-    
+    return EXIT_SUCCESS;
 }
