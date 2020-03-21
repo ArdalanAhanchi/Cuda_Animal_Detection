@@ -19,7 +19,6 @@
 #include "mat.hpp"
 #include <string>
 
-
 class ImageHandler
 {
 private:
@@ -126,10 +125,21 @@ public:
 
 	/*
 	*  Wrapper method which parses the resource file and performs all the neccessary
-	* transforms on the image for other algorithms used in the program.
+	*  transforms on the image for other algorithms used in the program. Defaults image resized
+	*  image size to a 64x64 image
 	*  @returns - OpenCV images that have been cropped, grayscaled, and resized
 	*/
 	std::vector<cv::Mat> applyTransforms();
+
+	/*
+	*  Wrapper method which parses the resource file and performs all the neccessary
+	*  transforms on the image for other algorithms used in the program. Uses the specified
+	*  dimension size when applying the resize step.
+	*  @param rows - number of rows (height) for the desired image size
+	*  @param cols - number of columns (width) for the desired image size
+	*  @returns - OpenCV images that have been cropped, grayscaled, and resized
+	*/
+	std::vector<cv::Mat> applyTransforms(unsigned int rows, unsigned int cols);
 
     /*
     *  Wrapper method which reads the raw images and returns an opencv array.

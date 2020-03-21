@@ -301,10 +301,26 @@ std::vector<cv::Mat> ImageHandler::applyAverageSizeTransform(std::vector<cv::Mat
 
 /*
 *  Wrapper method which parses the resource file and performs all the neccessary
-* transforms on the image for other algorithms used in the program.
+*  transforms on the image for other algorithms used in the program. Defaults image resized
+*  image size to a 64x64 image
 *  @returns - OpenCV images that have been cropped, grayscaled, and resized
 */
 std::vector<cv::Mat> ImageHandler::applyTransforms()
+{
+	const int rows = 64;
+	const int cols = 64;
+	return applyTransforms(rows, cols);
+}
+
+/*
+*  Wrapper method which parses the resource file and performs all the neccessary
+*  transforms on the image for other algorithms used in the program. Uses the specified
+*  dimension size when applying the resize step.
+*  @param rows - number of rows (height) for the desired image size
+*  @param cols - number of columns (width) for the desired image size
+*  @returns - OpenCV images that have been cropped, grayscaled, and resized
+*/
+std::vector<cv::Mat> ImageHandler::applyTransforms(unsigned int rows, unsigned int cols)
 {
 	std::vector<cv::Mat> resultImages;
 	std::vector<OpenImage> openImages = parseImages();
@@ -313,22 +329,16 @@ std::vector<cv::Mat> ImageHandler::applyTransforms()
 		std::vector<cv::Mat> boundaryImages = applyBoundaryTransform(openImages);
 		if (!boundaryImages.empty())
 		{
-			cv::Size desiredSize(64, 64);
+			cv::Size desiredSize(cols, rows);
 			std::vector<cv::Mat> resizedImages = resizeImages(boundaryImages, desiredSize);
 			if (!resizedImages.empty())
 			{
 				resultImages = resizedImages;
 			}
-			/*std::vector<cv::Mat> resizedImages = applyAverageSizeTransform(boundaryImages);
-			if (!resizedImages.empty())
-			{
-				resultImages = resizedImages;
-			}*/
 		}
 	}
 	return resultImages;
 }
-
 
 /*
 *  Wrapper method which reads the raw images and returns an opencv array.
