@@ -182,6 +182,6 @@ void test_mat() {
 
 int main() {
     std::cerr << "Starting the matrix test program" << std::endl;
-    cmp_gpu_cpu();  
+    //cmp_gpu_cpu();  
     test_mat();
 }
