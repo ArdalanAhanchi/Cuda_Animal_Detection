@@ -7,15 +7,13 @@
  */
 
 #include "ops_hybrid.cuh"
-#include "ops_cpu.hpp"
-#include "ops_gpu.cuh"
+#include "ops_hybrid_triggers.cuh"
+
 #include "mat.hpp"
 
 #include <iostream>
 #include <cmath>                                                        //For exponents.
 
-//The N (for a NxN matrix), in which the rest of the calculations will be done on GPU.
-#define CPU_LIMIT 350
 
 namespace anr {
 
@@ -29,9 +27,21 @@ namespace anr {
  *  @return The results for the addition (only the pointer is passed by value).
  */
 Mat Ops_hybrid::add(const Mat& a, const Mat& b) {
-    //Call ops on cpu since add is more efficient on cpu.
-    Ops_cpu ops;
-    return ops.add(a, b);
+    //Check if we're in Vector mode.
+    if(a.rows() == 1) {
+        //Check if we reach the trigger, then run it in GPU mode.
+        if(ADD_V_TRIGGER != NEVER_TRIGGER && a.cols() > ADD_V_TRIGGER)
+            return ops_g.add(a, b);
+
+    } else {          //Matrix mode.
+        //Check if we reach the trigger, then run it in GPU mode.
+        if(ADD_M_TRIGGER != NEVER_TRIGGER 
+            && a.cols() > ADD_M_TRIGGER && a.rows() > ADD_M_TRIGGER)
+            return ops_g.add(a, b);
+    }
+
+    //If we reach here, call ops on CPU since it didn't qualify for GPU.
+    return ops_c.add(a, b);
 }
 
 
@@ -45,9 +55,21 @@ Mat Ops_hybrid::add(const Mat& a, const Mat& b) {
  *  @return The results for the subtraction (only the pointer is passed by value).
  */
 Mat Ops_hybrid::sub(const Mat& a, const Mat& b) {
-    //Call ops on cpu since sub is more efficient on cpu.
-    Ops_cpu ops;
-    return ops.sub(a, b);
+    //Check if we're in Vector mode.
+    if(a.rows() == 1) {
+        //Check if we reach the trigger, then run it in GPU mode.
+        if(SUB_V_TRIGGER != NEVER_TRIGGER && a.cols() > SUB_V_TRIGGER)
+            return ops_g.sub(a, b);
+
+    } else {          //Matrix mode.
+        //Check if we reach the trigger, then run it in GPU mode.
+        if(SUB_M_TRIGGER != NEVER_TRIGGER 
+            && a.cols() > SUB_M_TRIGGER && a.rows() > SUB_M_TRIGGER)
+            return ops_g.sub(a, b);
+    }
+
+    //If we reach here, call ops on CPU since it didn't qualify for GPU.
+    return ops_c.sub(a, b);
 }
 
 
@@ -61,18 +83,21 @@ Mat Ops_hybrid::sub(const Mat& a, const Mat& b) {
  *  @return The results for the multiplication (only the pointer is passed by value).
  */
 Mat Ops_hybrid::mult(const Mat& a, const Mat& b)  {
-    Ops* ops;
+   //Check if we're in Vector mode.
+    if(a.rows() == 1) {
+        //Check if we reach the trigger, then run it in GPU mode.
+        if(MULT_V_TRIGGER != NEVER_TRIGGER && a.cols() > MULT_V_TRIGGER)
+            return ops_g.mult(a, b);
 
-    //Check if we reach the limit, and then assign it to cpu or gpu.
-    if(a.rows() > CPU_LIMIT && a.cols() > CPU_LIMIT && b.cols() > CPU_LIMIT) {
-        Ops_gpu g;        
-        ops = &g;
-    } else {
-        Ops_cpu c;
-        ops = &c;
+    } else {          //Matrix mode.
+        //Check if we reach the trigger, then run it in GPU mode.
+        if(MULT_M_TRIGGER != NEVER_TRIGGER 
+            && a.cols() > MULT_M_TRIGGER && a.rows() > MULT_M_TRIGGER)
+            return ops_g.mult(a, b);
     }
-        
-    return ops->mult(a, b);
+
+    //If we reach here, call ops on CPU since it didn't qualify for GPU.
+    return ops_c.mult(a, b);
 }  
 
 
@@ -85,9 +110,21 @@ Mat Ops_hybrid::mult(const Mat& a, const Mat& b)  {
  *  @return The results for the multiplication (only the pointer is passed by value).
  */
 Mat Ops_hybrid::e_mult(const Mat& a, const Mat& b) {
-    //Call ops on cpu since add is more efficient on cpu.
-    Ops_cpu ops;
-    return ops.e_mult(a, b);
+    //Check if we're in Vector mode.
+    if(a.rows() == 1) {
+        //Check if we reach the trigger, then run it in GPU mode.
+        if(EMULT_V_TRIGGER != NEVER_TRIGGER && a.cols() > EMULT_V_TRIGGER)
+            return ops_g.e_mult(a, b);
+
+    } else {          //Matrix mode.
+        //Check if we reach the trigger, then run it in GPU mode.
+        if(EMULT_M_TRIGGER != NEVER_TRIGGER 
+            && a.cols() > EMULT_M_TRIGGER && a.rows() > EMULT_M_TRIGGER)
+            return ops_g.e_mult(a, b);
+    }
+
+    //If we reach here, call ops on CPU since it didn't qualify for GPU.
+    return ops_c.e_mult(a, b);
 }  
 
 
@@ -100,9 +137,21 @@ Mat Ops_hybrid::e_mult(const Mat& a, const Mat& b) {
  *  @return The results for the scaling (only the pointer is passed by value).
  */ 
 Mat Ops_hybrid::scale(const Mat& a, const type& scale) {
-    //Call ops on cpu since add is more efficient on cpu.
-    Ops_cpu ops;
-    return ops.scale(a, scale);
+    //Check if we're in Vector mode.
+    if(a.rows() == 1) {
+        //Check if we reach the trigger, then run it in GPU mode.
+        if(SCALE_V_TRIGGER != NEVER_TRIGGER && a.cols() > SCALE_V_TRIGGER)
+            return ops_g.scale(a, scale);
+
+    } else {          //Matrix mode.
+        //Check if we reach the trigger, then run it in GPU mode.
+        if(SCALE_M_TRIGGER != NEVER_TRIGGER 
+            && a.cols() > SCALE_M_TRIGGER && a.rows() > SCALE_M_TRIGGER)
+            return ops_g.scale(a, scale);
+    }
+
+    //If we reach here, call ops on CPU since it didn't qualify for GPU.
+    return ops_c.scale(a, scale);
 }
 
 
@@ -113,9 +162,21 @@ Mat Ops_hybrid::scale(const Mat& a, const type& scale) {
  *  @param input The matrix where we're applying the sigmoid to. 
  */
 void Ops_hybrid::sigmoid(Mat& input) {
-    //Call ops on cpu since sigmoid is more efficient on cpu.
-    Ops_cpu ops;
-    return ops.sigmoid(input);
+    //Check if we're in Vector mode.
+    if(input.rows() == 1) {
+        //Check if we reach the trigger, then run it in GPU mode.
+        if(SIG_V_TRIGGER != NEVER_TRIGGER && input.cols() > SIG_V_TRIGGER)
+            return ops_g.sigmoid(input);
+
+    } else {          //Matrix mode.
+        //Check if we reach the trigger, then run it in GPU mode.
+        if(SIG_M_TRIGGER != NEVER_TRIGGER 
+            && input.cols() > SIG_M_TRIGGER && input.rows() > SIG_M_TRIGGER)
+            return ops_g.sigmoid(input);
+    }
+
+    //If we reach here, call ops on CPU since it didn't qualify for GPU.
+    return ops_c.sigmoid(input);
 }   
 
 
@@ -125,9 +186,21 @@ void Ops_hybrid::sigmoid(Mat& input) {
  *  @param input The matrix where we're applying the sigmoid to. 
  */
 void Ops_hybrid::deriv_sigmoid(Mat& input) {
-    //Call ops on cpu since add is more efficient on cpu.
-    Ops_cpu ops;
-    return ops.deriv_sigmoid(input);
+    //Check if we're in Vector mode.
+    if(input.rows() == 1) {
+        //Check if we reach the trigger, then run it in GPU mode.
+        if(DSIG_V_TRIGGER != NEVER_TRIGGER && input.cols() > DSIG_V_TRIGGER)
+            return ops_g.deriv_sigmoid(input);
+
+    } else {          //Matrix mode.
+        //Check if we reach the trigger, then run it in GPU mode.
+        if(DSIG_M_TRIGGER != NEVER_TRIGGER 
+            && input.cols() > DSIG_M_TRIGGER && input.rows() > DSIG_M_TRIGGER)
+            return ops_g.deriv_sigmoid(input);
+    }
+
+    //If we reach here, call ops on CPU since it didn't qualify for GPU.
+    return ops_c.deriv_sigmoid(input);
 }
 
 
@@ -137,9 +210,21 @@ void Ops_hybrid::deriv_sigmoid(Mat& input) {
  * @param input The matrix where we're applying the sigmoid to. 
  */
 void Ops_hybrid::relu(Mat& input) {
-    //Call ops on cpu since add is more efficient on cpu.
-    Ops_cpu ops;
-    return ops.relu(input);
+    //Check if we're in Vector mode.
+    if(input.rows() == 1) {
+        //Check if we reach the trigger, then run it in GPU mode.
+        if(RELU_V_TRIGGER != NEVER_TRIGGER && input.cols() > RELU_V_TRIGGER)
+            return ops_g.relu(input);
+
+    } else {          //Matrix mode.
+        //Check if we reach the trigger, then run it in GPU mode.
+        if(RELU_M_TRIGGER != NEVER_TRIGGER 
+            && input.cols() > RELU_M_TRIGGER && input.rows() > RELU_M_TRIGGER)
+            return ops_g.relu(input);
+    }
+
+    //If we reach here, call ops on CPU since it didn't qualify for GPU.
+    return ops_c.relu(input);
 }
 
 
@@ -149,9 +234,21 @@ void Ops_hybrid::relu(Mat& input) {
  * @param input The matrix where we're applying the sigmoid to. 
  */
 void Ops_hybrid::deriv_relu(Mat & input) {
-    //Call ops on cpu since add is more efficient on cpu.
-    Ops_cpu ops;
-    return ops.deriv_relu(input);
+    //Check if we're in Vector mode.
+    if(input.rows() == 1) {
+        //Check if we reach the trigger, then run it in GPU mode.
+        if(DRELU_V_TRIGGER != NEVER_TRIGGER && input.cols() > DRELU_V_TRIGGER)
+            return ops_g.deriv_relu(input);
+
+    } else {          //Matrix mode.
+        //Check if we reach the trigger, then run it in GPU mode.
+        if(DRELU_M_TRIGGER != NEVER_TRIGGER 
+            && input.cols() > DRELU_M_TRIGGER && input.rows() > DRELU_M_TRIGGER)
+            return ops_g.deriv_relu(input);
+    }
+
+    //If we reach here, call ops on CPU since it didn't qualify for GPU.
+    return ops_c.deriv_relu(input);
 }
 
 }

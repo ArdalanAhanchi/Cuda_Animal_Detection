@@ -3,6 +3,8 @@
 
 #include "mat.hpp"
 #include "ops.hpp"
+#include "ops_cpu.hpp"
+#include "ops_gpu.cuh"
 
 #include <string>
 
@@ -105,6 +107,10 @@ class Ops_hybrid : public Ops {
      *  @param input The matrix where we're applying the relu to.
      */
     void deriv_relu(Mat& input);
+
+  private:
+    Ops_cpu ops_c;          /**< For calling CPU functions. */ 
+    Ops_gpu ops_g;          /**< For calling GPU functions. */
 };  
 
 }
